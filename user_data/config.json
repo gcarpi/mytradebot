@@ -1,0 +1,128 @@
+{
+    "max_open_trades": 15,
+    "stake_currency": "USDT",
+    "stake_amount" : "unlimited",
+    "tradable_balance_ratio": 0.99,
+    "fiat_display_currency": "USD",
+    "timeframe": "30m",
+    "dry_run": true,
+    "cancel_open_orders_on_exit": false,
+    "unfilledtimeout": {
+        "buy": 10,
+        "sell": 30,
+        "unit": "minutes"
+    },
+    "bid_strategy": {
+        "price_side": "bid",
+        "ask_last_balance": 0.0,
+        "use_order_book": true,
+        "order_book_top": 1,
+        "check_depth_of_market": {
+            "enabled": false,
+            "bids_to_ask_delta": 1
+        }
+    },
+    "ask_strategy": {
+        "price_side": "ask",
+        "use_order_book": true,
+        "order_book_top": 1
+    },
+    "exchange": {
+        "name": "binance",
+        "key": "",
+        "secret": "",
+        "ccxt_config": {"enableRateLimit": true},
+        "ccxt_async_config": {
+            "enableRateLimit": true,
+            "rateLimit": 200
+        },
+        "pair_whitelist": [
+            "BTC/USDT",
+            "ETH/USDT",
+            "LUNA/USDT",
+            "SOL/USDT",
+            "DOT/USDT",
+            "AVAX/USDT",
+            "CELR/USDT",
+            "FTM/USDT",
+            "FIL/USDT",
+            "ATOM/USDT",
+            "COTI/USDT",
+            "XRP/USDT",
+            "XTZ/USDT",
+            "CELO/USDT",
+            "ONE/USDT",
+            "NEAR/USDT",
+            "LINK/USDT",
+            "REN/USDT",
+            "ALGO/USDT",
+            "LTC/USDT",
+            "AXS/USDT",
+            "FTT/USDT",
+            "MATIC/USDT",
+            "OMG/USDT",
+            "GALA/USDT",
+            "DYDX/USDT",
+            "KAVA/USDT",
+            "DF/USDT",
+            "EGLD/USDT",
+            "TRX/USDT",
+            "THETA/USDT",
+            "VET/USDT",
+            "EOS/USDT",
+            "ETC/USDT",
+            "SLP/USDT",
+            "FET/USDT",
+            "HBAR/USDT",
+            "BCH/USDT",
+            "CAKE/USDT",
+            "SUSHI/USDT",
+            "YGG/USDT",
+            "DODO/USDT",
+            "DENT/USDT"
+        ],
+        "pair_blacklist": [
+            "BNB/.*"
+        ]
+    },
+    "pairlists": [
+        {
+            "method": "StaticPairList"
+        }
+    ],
+    "edge": {
+        "enabled": false,
+        "process_throttle_secs": 3600,
+        "calculate_since_number_of_days": 7,
+        "allowed_risk": 0.01,
+        "stoploss_range_min": -0.01,
+        "stoploss_range_max": -0.1,
+        "stoploss_range_step": -0.01,
+        "minimum_winrate": 0.60,
+        "minimum_expectancy": 0.20,
+        "min_trade_number": 10,
+        "max_trade_duration_minute": 1440,
+        "remove_pumps": false
+    },
+    "telegram": {
+        "enabled": true,
+        "token": "1959986206:AAEQlks2P_QnCxPMcuv8aYUbwPys7CwO_pI",
+        "chat_id": "2027730628"
+    },
+    "api_server": {
+        "enabled": true,
+        "listen_ip_address": "0.0.0.0",
+        "listen_port": 8080,
+        "verbosity": "info",
+        "jwt_secret_key": "7ff6b55504d15a695681b8224a68ecf087394cf6acc7a5d725bf031dbe679701",
+        "CORS_origins": [],
+        "username": "carpi",
+        "password": "rehl20th"
+    },
+    "bot_name": "freqtrade",
+    "initial_state": "running",
+    "forcebuy_enable": false,
+    "internals": {
+        "process_throttle_secs": 5
+    }
+}
