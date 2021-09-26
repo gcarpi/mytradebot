@@ -1,6 +1,4 @@
-# Author: @Mablue (Masoud Azizi)
-# github: https://github.com/mablue/
-# IMPORTANT: DO NOT USE IT WITHOUT HYPEROPT:
+# Jupyter Strategy
 # docker-compose -f docker-compose.yml run --rm freqtrade hyperopt --hyperopt-loss SharpeHyperOptLoss --spaces roi stoploss --strategy Jupyter --config user_data/config.json --config user_data/config.dev.json --epochs 100
 
 from freqtrade.strategy.hyper import IntParameter, DecimalParameter

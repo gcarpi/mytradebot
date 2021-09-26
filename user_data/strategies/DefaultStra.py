@@ -1,9 +1,6 @@
-# Zeus Strategy: First Generation of GodStra Strategy with maximum
+# DefaultStra Strategy
 # AVG/MID profit in USDT
-# Author: @Mablue (Masoud Azizi)
-# github: https://github.com/mablue/
-# IMPORTANT: INSTALL TA BEFOUR RUN (pip install ta)
-# docker-compose -f docker-compose.yml run --rm freqtrade hyperopt --hyperopt-loss SharpeHyperOptLoss --spaces buy sell roi stoploss --strategy Zeus --config user_data/config.json --config user_data/config.dev.json --epochs 100
+# docker-compose -f docker-compose.yml run --rm freqtrade hyperopt --hyperopt-loss SharpeHyperOptLoss --spaces buy sell roi stoploss --strategy DefaultStra --config user_data/config.json --config user_data/config.dev.json --epochs 100
 
 import logging
 from freqtrade.strategy.hyper import CategoricalParameter, DecimalParameter
@@ -19,20 +16,20 @@ import freqtrade.vendor.qtpylib.indicators as qtpylib
 from functools import reduce
 import numpy as np
 
-class Zeus(IStrategy):
-    # Buy hyperspace params:
+class DefaultStra(IStrategy):
+    # Buy params:
     buy_params = {
         "buy_cat": "<R",
         "buy_real": 0.6344,
     }
 
-    # Sell hyperspace params:
+    # Sell params:
     sell_params = {
         "sell_cat": "=R",
         "sell_real": 0.2861,
     }
 
-    # ROI table:
+    # ROI params:
     minimal_roi = {
       "0": 0.28900000000000003,
       "129": 0.062,
@@ -43,6 +40,7 @@ class Zeus(IStrategy):
     # Stoploss:
     stoploss = -0.256
 
+    # Buy hypers
     buy_real = DecimalParameter(
         0.001, 0.999, decimals=4, default=0.11908, space='buy')
     buy_cat = CategoricalParameter(
@@ -52,7 +50,6 @@ class Zeus(IStrategy):
     sell_cat = CategoricalParameter(
         [">R", "=R", "<R"], default='>R', space='sell')
 
-    # Buy hypers
     timeframe = '30m'
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
@@ -94,7 +91,7 @@ class Zeus(IStrategy):
         REAL = self.buy_real.value
         OPR = self.buy_cat.value
         DFIND = dataframe[IND]
-        # print(DFIND.mean())
+
         if OPR == ">R":
             conditions.append(DFIND > REAL)
         elif OPR == "=R":

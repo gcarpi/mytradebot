@@ -110,8 +110,8 @@
         "verbosity": "info",
         "jwt_secret_key": "7ff6b55504d15a695681b8224a68ecf087394cf6acc7a5d725bf031dbe679701",
         "CORS_origins": [],
-        "username": "carpi",
-        "password": "rehl20th"
+        "username": "username",
+        "password": "password!"
     },
     "bot_name": "freqtrade",
     "initial_state": "running",

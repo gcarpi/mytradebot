@@ -10,7 +10,7 @@ services:
     image: freqtrade:local
     build:
       context: .
-      dockerfile: "./Dockerfile.dev"
+      dockerfile: "./Dockerfile.custom"
     restart: unless-stopped
     container_name: freqtrade
     volumes:
@@ -23,4 +23,4 @@ services:
       --logfile /freqtrade/user_data/logs/freqtrade.log
       --db-url sqlite:////freqtrade/user_data/tradesv3.sqlite
       --config /freqtrade/user_data/config.json
-      --strategy Zeus
+      --strategy DefaultStra
