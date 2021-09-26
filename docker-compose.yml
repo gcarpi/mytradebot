@@ -53,7 +53,7 @@ services:
       - ./views:/var/www/html
     depends_on:
       - webserver
-    command: certonly --webroot --webroot-path=/var/www/html --email gcarpi.developer@gmail.com --agree-tos --no-eff-email --staging -d mytradebot.guilhermecarpi.com -d www.mytradebot.guilhermecarpi.com
+    command: certonly --webroot --webroot-path=/var/www/html --email gcarpi.developer@gmail.com --agree-tos --no-eff-email --force-renewal -d mytradebot.guilhermecarpi.com -d www.mytradebot.guilhermecarpi.com
 
 volumes:
   certbot-etc:
