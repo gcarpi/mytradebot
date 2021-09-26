@@ -1,19 +1,16 @@
 # pragma pylint: disable=missing-docstring, invalid-name, pointless-string-statement
 # isort: skip_file
-# --- Do not remove these libs ---
+
 import numpy as np  # noqa
 import pandas as pd  # noqa
 from pandas import DataFrame
 
 from freqtrade.strategy.interface import IStrategy
 
-# --------------------------------
-# Add your lib to import here
 import talib.abstract as ta
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 from datetime import datetime
 from freqtrade.persistence import Trade
-
 
 class Moon(IStrategy):
     """
@@ -23,9 +20,12 @@ class Moon(IStrategy):
 
     the populate_buy_trend() function is pretty nonsencial
     """
-    timeframe = '1h'
+    timeframe = '30m'
+
     stoploss = -0.2
+
     custom_info = {}
+
     use_custom_stoploss = True
 
     def custom_stoploss(self, pair: str, trade: 'Trade', current_time: datetime,
@@ -55,13 +55,12 @@ class Moon(IStrategy):
         return result
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+
         dataframe['sar'] = ta.SAR(dataframe)
+
         if self.dp.runmode.value in ('backtest', 'hyperopt'):
             self.custom_info[metadata['pair']] = dataframe[['date', 'sar']].copy().set_index('date')
 
-        # all "normal" indicators:
-        # e.g.
-        # dataframe['rsi'] = ta.RSI(dataframe)
         return dataframe
 
     def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:

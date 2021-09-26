@@ -1,35 +1,29 @@
 # Author: @Mablue (Masoud Azizi)
 # github: https://github.com/mablue/
 # IMPORTANT: DO NOT USE IT WITHOUT HYPEROPT:
-# freqtrade hyperopt --hyperopt-loss SharpeHyperOptLoss --spaces all --strategy MabStra --config config.json -e 100
+# docker-compose -f docker-compose.yml run --rm freqtrade hyperopt --hyperopt-loss SharpeHyperOptLoss --spaces roi stoploss --strategy Jupyter --config user_data/config.json --config user_data/config.dev.json --epochs 100
 
-# --- Do not remove these libs ---
 from freqtrade.strategy.hyper import IntParameter, DecimalParameter
 from freqtrade.strategy.interface import IStrategy
 from pandas import DataFrame
-# --------------------------------
 
-# Add your lib to import here
 import talib.abstract as ta
-
 
 class Jupyter(IStrategy):
 
-    # #################### RESULTS PASTE PLACE ####################
     # ROI table:
     minimal_roi = {
-        "0": 0.598,
-        "644": 0.166,
-        "3269": 0.115,
-        "7289": 0
+        "0": 0.457,
+        "101": 0.092,
+        "223": 0.072,
+        "816": 0
     }
 
     # Stoploss:
-    stoploss = -0.128
-    # Buy hypers
-    timeframe = '1d'
+    stoploss = -0.192
 
-    # #################### END OF RESULT PLACE ####################
+    # Buy hypers
+    timeframe = '30m'
 
     # buy params
     buy_mojo_ma_timeframe = IntParameter(2, 100, default=7, space='buy')
@@ -39,7 +33,7 @@ class Jupyter(IStrategy):
         0, 2, decimals=4, default=2.25446, space='buy')
     buy_div_min = DecimalParameter(
         0, 2, decimals=4, default=0.29497, space='buy')
-    # sell params
+
     sell_mojo_ma_timeframe = IntParameter(2, 100, default=7, space='sell')
     sell_fast_ma_timeframe = IntParameter(2, 100, default=14, space='sell')
     sell_slow_ma_timeframe = IntParameter(2, 100, default=28, space='sell')

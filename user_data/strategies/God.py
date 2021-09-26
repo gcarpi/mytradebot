@@ -2,7 +2,7 @@
 # Author: @Mablue (Masoud Azizi)
 # github: https://github.com/mablue/
 # freqtrade hyperopt --hyperopt-loss SharpeHyperOptLoss --spaces buy roi trailing sell --strategy God
-# --- Do not remove these libs ---
+
 from freqtrade import data
 from freqtrade.strategy.hyper import CategoricalParameter, DecimalParameter
 
@@ -10,16 +10,13 @@ from numpy.lib import math
 from freqtrade.strategy.interface import IStrategy
 from pandas import DataFrame
 
-# --------------------------------
 
-# Add your lib to import here
-# TODO: talib is fast but have not more indicators
 import talib.abstract as ta
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 from functools import reduce
 import numpy as np
 from random import shuffle
-#  TODO: this gene is removed 'MAVP' cuz or error on periods
+
 all_god_genes = {
     'Overlap Studies': {
         'BBANDS-0',             # Bollinger Bands
@@ -32,7 +29,6 @@ all_god_genes = {
         'MA',                   # Moving average
         'MAMA-0',               # MESA Adaptive Moving Average
         'MAMA-1',               # MESA Adaptive Moving Average
-        # TODO: Fix this
         # 'MAVP',               # Moving average with variable period
         'MIDPOINT',             # MidPoint over period
         'MIDPRICE',             # Midpoint Price over period
@@ -329,8 +325,6 @@ def condition_generator(dataframe, operator, indicator, crossed_indicator, real_
 
     condition = (dataframe['volume'] > 10)
 
-    # TODO : it ill callculated in populate indicators.
-
     dataframe[indicator] = gene_calculator(dataframe, indicator)
     dataframe[crossed_indicator] = gene_calculator(
         dataframe, crossed_indicator)
@@ -458,7 +452,7 @@ def condition_generator(dataframe, operator, indicator, crossed_indicator, real_
 
 
 class God(IStrategy):
-    # #################### RESULTS PASTE PLACE ####################
+
     # ROI table:
     minimal_roi = {
         "0": 0.598,
@@ -469,12 +463,10 @@ class God(IStrategy):
 
     # Stoploss:
     stoploss = -0.128
+
     # Buy hypers
     timeframe = '30m'
 
-    # #################### END OF RESULT PLACE ####################
-
-    # TODO: Its not dry code!
     # Buy Hyperoptable Parameters/Spaces.
     buy_crossed_indicator0 = CategoricalParameter(
         god_genes_with_timeperiod, default="ADD-20", space='buy')
@@ -530,20 +522,13 @@ class God(IStrategy):
         0, 1, decimals=DECIMALS, default=0.87267, space='sell')
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        '''
-        It's good to calculate all indicators in all time periods here and so optimize the strategy.
-        But this strategy can take much time to generate anything that may not use in his optimization.
-        I just calculate the specific indicators in specific time period inside buy and sell strategy populator methods if needed.
-        Also, this method (populate_indicators) just calculates default value of hyperoptable params
-        so using this method have not big benefits instade of calculating useable things inside buy and sell trand populators
-        '''
+
         return dataframe
 
     def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
 
         conditions = list()
 
-        # TODO: Its not dry code!
         buy_indicator = self.buy_indicator0.value
         buy_crossed_indicator = self.buy_crossed_indicator0.value
         buy_operator = self.buy_operator0.value
@@ -556,7 +541,7 @@ class God(IStrategy):
             buy_real_num
         )
         conditions.append(condition)
-        # backup
+
         buy_indicator = self.buy_indicator1.value
         buy_crossed_indicator = self.buy_crossed_indicator1.value
         buy_operator = self.buy_operator1.value
@@ -589,14 +574,12 @@ class God(IStrategy):
                 reduce(lambda x, y: x & y, conditions),
                 'buy']=1
 
-        # print(len(dataframe.keys()))
-
         return dataframe
 
     def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
 
         conditions = list()
-        # TODO: Its not dry code!
+
         sell_indicator = self.sell_indicator0.value
         sell_crossed_indicator = self.sell_crossed_indicator0.value
         sell_operator = self.sell_operator0.value

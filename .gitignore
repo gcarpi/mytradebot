@@ -1,5 +1,6 @@
 # Freqtrade rules
 *.sqlite
+*.sqlite-journal
 logfile.txt
 user_data/backtest_results
 user_data/data

@@ -2,19 +2,16 @@
 # AVG/MID profit in USDT
 # Author: @Mablue (Masoud Azizi)
 # github: https://github.com/mablue/
-# IMPORTANT: INSTALL TA BEFOUR RUN(pip install ta)
-# freqtrade hyperopt --hyperopt-loss SharpeHyperOptLoss --spaces buy sell roi --strategy Zeus
-# --- Do not remove these libs ---
+# IMPORTANT: INSTALL TA BEFOUR RUN (pip install ta)
+# docker-compose -f docker-compose.yml run --rm freqtrade hyperopt --hyperopt-loss SharpeHyperOptLoss --spaces buy sell roi stoploss --strategy Zeus --config user_data/config.json --config user_data/config.dev.json --epochs 100
+
 import logging
 from freqtrade.strategy.hyper import CategoricalParameter, DecimalParameter
 
 from numpy.lib import math
 from freqtrade.strategy.interface import IStrategy
 from pandas import DataFrame
-# --------------------------------
 
-# Add your lib to import here
-# import talib.abstract as ta
 import pandas as pd
 import ta
 from ta.utils import dropna
@@ -22,26 +19,25 @@ import freqtrade.vendor.qtpylib.indicators as qtpylib
 from functools import reduce
 import numpy as np
 
-
 class Zeus(IStrategy):
     # Buy hyperspace params:
     buy_params = {
         "buy_cat": "<R",
-        "buy_real": 0.5862,
+        "buy_real": 0.6344,
     }
 
     # Sell hyperspace params:
     sell_params = {
         "sell_cat": "=R",
-        "sell_real": 0.7485,
+        "sell_real": 0.2861,
     }
 
     # ROI table:
     minimal_roi = {
-      "0": 0.365,
-      "115": 0.111,
-      "210": 0.015,
-      "543": 0
+      "0": 0.28900000000000003,
+      "129": 0.062,
+      "450": 0.036,
+      "570": 0
     }
 
     # Stoploss:
@@ -60,8 +56,6 @@ class Zeus(IStrategy):
     timeframe = '30m'
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        # Add all ta features
-
         dataframe['trend_ichimoku_base'] = ta.trend.ichimoku_base_line(
             dataframe['high'],
             dataframe['low'],
@@ -121,7 +115,6 @@ class Zeus(IStrategy):
         REAL = self.sell_real.value
         OPR = self.sell_cat.value
         DFIND = dataframe[IND]
-        # print(DFIND.mean())
 
         if OPR == ">R":
             conditions.append(DFIND > REAL)
