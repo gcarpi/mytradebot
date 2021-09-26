@@ -1,4 +1,5 @@
 version: '3'
+
 services:
   freqtrade:
     # image: freqtradeorg/freqtrade:stable
@@ -15,7 +16,7 @@ services:
     volumes:
       - "./user_data:/freqtrade/user_data"
     ports:
-      - "80:8080"
+      - "8080:8080"
     # Default command used when running `docker compose up`
     command: >
       trade
@@ -32,7 +33,6 @@ services:
     restart: unless-stopped
     ports:
       - "80:80"
-      - "443:443"
     volumes:
       - ./views:/var/www/html
       - ./nginx-conf:/etc/nginx/conf.d
@@ -55,10 +55,10 @@ services:
       - webserver
     command: certonly --webroot --webroot-path=/var/www/html --email gcarpi.developer@gmail.com --agree-tos --no-eff-email --staging -d mytradebot.guilhermecarpi.com -d www.mytradebot.guilhermecarpi.com
 
-  volumes:
-    certbot-etc:
-    certbot-var:
+volumes:
+  certbot-etc:
+  certbot-var:
 
-  networks:
-    app-network:
-      driver: bridge
+networks:
+  app-network:
+    driver: bridge
