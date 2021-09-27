@@ -1,6 +1,6 @@
 # DefaultStra Strategy
 # AVG/MID profit in USDT
-# docker-compose -f docker-compose.yml run --rm freqtrade hyperopt --hyperopt-loss SharpeHyperOptLoss --spaces buy sell roi stoploss --strategy DefaultStra --config user_data/config.json --config user_data/config.dev.json --epochs 100
+# docker-compose -f docker-compose.yml run --rm freqtrade hyperopt --hyperopt-loss SharpeHyperOptLoss --spaces buy sell roi stoploss --strategy DefaultStra --config user_data/config.json --config user_data/config-dev.json --epochs 100
 
 import logging
 from freqtrade.strategy.hyper import CategoricalParameter, DecimalParameter
@@ -20,25 +20,25 @@ class DefaultStra(IStrategy):
     # Buy params:
     buy_params = {
         "buy_cat": "<R",
-        "buy_real": 0.6344,
+        "buy_real": 0.5747
     }
 
     # Sell params:
     sell_params = {
         "sell_cat": "=R",
-        "sell_real": 0.2861,
+        "sell_real": 0.6507
     }
 
     # ROI params:
     minimal_roi = {
-      "0": 0.28900000000000003,
-      "129": 0.062,
-      "450": 0.036,
-      "570": 0
+      "0": 0.4,
+      "65": 0.139,
+      "268": 0.056,
+      "908": 0
     }
 
     # Stoploss:
-    stoploss = -0.256
+    stoploss = -0.344
 
     # Buy hypers
     buy_real = DecimalParameter(

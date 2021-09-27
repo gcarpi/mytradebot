@@ -1,5 +1,5 @@
 {
-    "max_open_trades": 20,
+    "max_open_trades": 18,
     "stake_currency": "USDT",
     "stake_amount" : "unlimited",
     "tradable_balance_ratio": 0.99,
@@ -71,8 +71,10 @@
             "HUSD/USDT",
             "BTC/USDT",
             "ADA/USDT",
+            "COTI/USDT",
             "DOGE/USDT",
             "SHIB/USDT",
+            "XRP/USDT",
             ".*DOWN/USDT",
             ".*UP/USDT"
         ]
@@ -99,9 +101,9 @@
         "remove_pumps": false
     },
     "telegram": {
-        "enabled": true,
-        "token": "1959986206:AAEQlks2P_QnCxPMcuv8aYUbwPys7CwO_pI",
-        "chat_id": "2027730628"
+        "enabled": false,
+        "token": "",
+        "chat_id": ""
     },
     "api_server": {
         "enabled": true,

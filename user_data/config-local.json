@@ -1,0 +1,10 @@
+{
+  "pairlists": [{
+    "method": "StaticPairList"
+  }],
+  "telegram": {
+    "enabled": true,
+    "token": "1959986206:AAEQlks2P_QnCxPMcuv8aYUbwPys7CwO_pI",
+    "chat_id": "2027730628"
+  }
+}
