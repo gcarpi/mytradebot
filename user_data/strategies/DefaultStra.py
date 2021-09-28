@@ -1,6 +1,6 @@
 # DefaultStra Strategy
 # AVG/MID profit in USDT
-# docker-compose -f docker-compose.yml run --rm freqtrade hyperopt --hyperopt-loss SharpeHyperOptLoss --spaces buy sell roi stoploss --strategy DefaultStra --config user_data/config.json --config user_data/config-dev.json --epochs 100
+# docker-compose -f docker-local.yml run --rm freqtrade hyperopt --hyperopt-loss SharpeHyperOptLoss --spaces buy sell roi stoploss --strategy DefaultStra --config user_data/config.json --config user_data/config-local.json --epochs 100
 
 import logging
 from freqtrade.strategy.hyper import CategoricalParameter, DecimalParameter

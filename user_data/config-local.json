@@ -1,9 +1,11 @@
 {
-  "pairlists": [{
-    "method": "StaticPairList"
-  }],
+  "pairlists": [
+    {
+      "method": "StaticPairList"
+    }
+  ],
   "telegram": {
-    "enabled": true,
+    "enabled": false,
     "token": "1959986206:AAEQlks2P_QnCxPMcuv8aYUbwPys7CwO_pI",
     "chat_id": "2027730628"
   }
