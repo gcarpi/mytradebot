@@ -50,7 +50,7 @@ class DefaultStra(IStrategy):
     sell_cat = CategoricalParameter(
         [">R", "=R", "<R"], default='>R', space='sell')
 
-    timeframe = '30m'
+    timeframe = '5m'
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe['trend_ichimoku_base'] = ta.trend.ichimoku_base_line(
