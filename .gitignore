@@ -8,6 +8,7 @@ user_data/hyperopt_results
 user_data/logs
 user_data/plot
 user_data/config-private.json
+user_data/config-test.json
 freqtrade-plot.html
 freqtrade-profit-plot.html
 freqtrade/rpc/api_server/ui/*

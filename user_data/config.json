@@ -2,21 +2,33 @@
   "max_open_trades": 1,
   "stake_currency": "USDT",
   "stake_amount": "unlimited",
+  "amend_last_stake_amount ": true,
   "tradable_balance_ratio": 0.99,
   "fiat_display_currency": "USD",
   "timeframe": "5m",
   "dry_run": true,
   "cancel_open_orders_on_exit": false,
+  "ignore_buying_expired_candle_after": 90,
   "ignore_roi_if_buy_signal": true,
   "unfilledtimeout": {
     "buy": 10,
     "sell": 30,
-    "unit": "minutes"
+    "unit": "seconds"
+  },
+  "order_types": {
+    "buy": "market",
+    "sell": "market",
+    "forcesell": "market",
+    "emergencysell": "market",
+    "trailing_stop_loss": "market",
+    "stoploss": "market",
+    "stoploss_on_exchange": false,
+    "stoploss_on_exchange_interval": 60
   },
   "bid_strategy": {
     "price_side": "ask",
     "ask_last_balance": 0.0,
-    "use_order_book": true,
+    "use_order_book": false,
     "order_book_top": 1,
     "check_depth_of_market": {
       "enabled": false,
@@ -25,8 +37,9 @@
   },
   "ask_strategy": {
     "price_side": "bid",
-    "use_order_book": true,
-    "order_book_top": 1
+    "use_order_book": false,
+    "order_book_min": 1,
+    "order_book_max": 1
   },
   "exchange": {
     "name": "binance",
@@ -35,7 +48,7 @@
     "ccxt_config": { "enableRateLimit": true },
     "ccxt_async_config": {
       "enableRateLimit": true,
-      "rateLimit": 200
+      "rateLimit": 0
     },
     "pair_whitelist": [
       "AAVE/USDT",
@@ -167,37 +180,27 @@
   },
   "pairlists": [
     {
-      "method": "VolumePairList",
-      "number_assets": 70,
-      "sort_key": "quoteVolume",
-      "refresh_period": 1800
+        "method": "VolumePairList",
+        "number_assets": 60,
+        "sort_key": "quoteVolume"
     },
-    { "method": "AgeFilter", "min_days_listed": 14 },
-    { "method": "SpreadFilter", "max_spread_ratio": 0.005 },
+    {"method": "AgeFilter", "min_days_listed": 10},
     {
-      "method": "PriceFilter",
-      "low_price_ratio": 0.1,
-      "min_price": 0.001
+        "method": "VolatilityFilter",
+        "lookback_days": 4,
+        "min_volatility": 0.02,
+        "max_volatility": 0.75,
+        "refresh_period": 36000
     },
+    {"method": "SpreadFilter", "max_spread_ratio": 0.005},
     {
-      "method": "RangeStabilityFilter",
-      "lookback_days": 3,
-      "min_rate_of_change": 0.1,
-      "refresh_period": 1800
+        "method": "RangeStabilityFilter",
+        "lookback_days": 3,
+        "min_rate_of_change": 0.1,
+        "refresh_period": 1440
     },
-    {
-      "method": "VolatilityFilter",
-      "lookback_days": 3,
-      "min_volatility": 0.02,
-      "max_volatility": 0.75,
-      "refresh_period": 43200
-    },
-    {
-      "method": "VolumePairList",
-      "number_assets": 50,
-      "sort_key": "quoteVolume"
-    },
-    { "method": "ShuffleFilter" }
+    {"method": "PerformanceFilter"},
+    {"method": "PriceFilter", "low_price_ratio": 0.001}
   ],
   "edge": {
     "enabled": false,
