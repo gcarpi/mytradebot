@@ -12,25 +12,6 @@ from datetime import datetime, timedelta
 from freqtrade.exchange import timeframe_to_prev_date
 from technical.indicators import zema, VIDYA
 
-###########################################################################################################
-##    MultiMA_TSL, modded by stash86, based on SMAOffsetProtectOptV1 (modded by Perkmeister)             ##
-##    Based on @Lamborghini Store's SMAOffsetProtect strat, heavily based on @tirail's original SMAOffset##
-##                                                                                                       ##
-##    Strategy for Freqtrade https://github.com/freqtrade/freqtrade                                      ##
-##                                                                                                       ##
-##    Thanks to                                                                                          ##
-##    - Perkmeister, for their snippets for the sell signals and decaying EMA sell                       ##
-##    - ChangeToTower, for the PMax idea                                                                 ##
-##    - JimmyNixx, for their snippet to limit close value from the peak (that I modify into 5m tf check) ##
-##    - froggleston, for the Heikinashi check snippet from Cryptofrog                                    ##
-##                                                                                                       ##
-##                                                                                                       ##
-##                                                                                                       ##
-###########################################################################################################
-
-# I hope you do enough testing before proceeding, either backtesting and/or dry run.
-# Any profits and losses are all your responsibility
-
 class MultiMA_TSL(IStrategy):
     INTERFACE_VERSION = 2
 
