@@ -47,7 +47,7 @@ services:
       - app-network
 
   certbot:
-    image: certbot/certbot
+    image: certbot/certbot:arm32v6-latest
     container_name: certbot
     volumes:
       - certbot-etc:/etc/letsencrypt
