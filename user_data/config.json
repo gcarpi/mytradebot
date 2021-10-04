@@ -6,6 +6,7 @@
   "tradable_balance_ratio": 0.99,
   "fiat_display_currency": "USD",
   "dry_run": true,
+  "db_url": "sqlite:///tradesv3.dryrun.sqlite",
   "cancel_open_orders_on_exit": false,
   "ignore_buying_expired_candle_after": 90,
   "unfilledtimeout": {
@@ -46,7 +47,7 @@
     "ccxt_config": { "enableRateLimit": true },
     "ccxt_async_config": {
       "enableRateLimit": true,
-      "rateLimit": 0
+      "rateLimit": 200
     },
     "pair_whitelist": [
       "ETH/BUSD",
