@@ -157,6 +157,34 @@ class NASOSv5(IStrategy):
         'max_slippage': -0.02
     }
 
+    protection_params = {
+        "low_profit_lookback": 48,
+        "low_profit_min_req": 0.04,
+        "low_profit_stop_duration": 14,
+
+        "cooldown_lookback": 2,
+        "stoploss_lookback": 72,
+        "stoploss_stop_duration": 20,
+    }
+
+    @property
+    def protections(self):
+        prot = []
+
+        prot.append({
+            "method": "CooldownPeriod",
+            "stop_duration_candles": self.cooldown_lookback.value
+        })
+        prot.append({
+            "method": "LowProfitPairs",
+            "lookback_period_candles": self.low_profit_lookback.value,
+            "trade_limit": 1,
+            "stop_duration": int(self.low_profit_stop_duration.value),
+            "required_profit": self.low_profit_min_req.value
+        })
+
+        return prot
+
     def custom_stoploss(self, pair: str, trade: 'Trade', current_time: datetime,
                         current_rate: float, current_profit: float, **kwargs) -> float:
 
