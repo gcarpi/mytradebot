@@ -167,6 +167,12 @@ class NASOSv5(IStrategy):
         "stoploss_stop_duration": 20,
     }
 
+    cooldown_lookback = IntParameter(2, 48, default=2, space="protection", optimize=False)
+    low_profit_optimize = False
+    low_profit_lookback = IntParameter(2, 60, default=20, space="protection", optimize=low_profit_optimize)
+    low_profit_stop_duration = IntParameter(12, 200, default=20, space="protection", optimize=low_profit_optimize)
+    low_profit_min_req = DecimalParameter(-0.05, 0.05, default=-0.05, space="protection", decimals=2, optimize=low_profit_optimize)
+
     @property
     def protections(self):
         prot = []
