@@ -54,7 +54,7 @@ class NASOSv5(IStrategy):
 
     # ROI table:
     minimal_roi = {
-        "360": 0
+        "0": 100
     }
 
     # minimal_roi = {
@@ -65,7 +65,7 @@ class NASOSv5(IStrategy):
     # }
 
     # Stoploss:
-    stoploss = -0.228
+    stoploss = -0.15
 
     # SMAOffset
     base_nb_candles_buy = IntParameter(
@@ -109,9 +109,9 @@ class NASOSv5(IStrategy):
     # trailing_stop_positive_offset = 0.016
     # trailing_only_offset_is_reached = True
 
-    trailing_stop = True
-    trailing_stop_positive = 0.289
-    trailing_stop_positive_offset = 0.29
+    trailing_stop = False
+    trailing_stop_positive = 0.001
+    trailing_stop_positive_offset = 0.016
     trailing_only_offset_is_reached = False
 
     # Sell signal
