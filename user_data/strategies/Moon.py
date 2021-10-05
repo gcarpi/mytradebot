@@ -49,20 +49,13 @@ def EWO(dataframe, ema_length=5, ema2_length=34):
     return emadif
 
 
-class NASOSv5(IStrategy):
+class Moon(IStrategy):
     INTERFACE_VERSION = 2
 
     # ROI table:
     minimal_roi = {
         "0": 100
     }
-
-    # minimal_roi = {
-    #   "0": 0.054,
-    #   "14": 0.034,
-    #   "24": 0.024,
-    #   "90": 0
-    # }
 
     # Stoploss:
     stoploss = -0.15
@@ -102,12 +95,6 @@ class NASOSv5(IStrategy):
     rsi_buy = IntParameter(10, 80, default=buy_params['rsi_buy'], space='buy', optimize=False)
     rsi_fast_buy = IntParameter(
         10, 50, default=buy_params['rsi_fast_buy'], space='buy', optimize=False)
-
-    # Trailing stop:
-    # trailing_stop = False
-    # trailing_stop_positive = 0.001
-    # trailing_stop_positive_offset = 0.016
-    # trailing_only_offset_is_reached = True
 
     trailing_stop = False
     trailing_stop_positive = 0.001

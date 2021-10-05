@@ -7,12 +7,13 @@ user_data/data
 user_data/hyperopt_results
 user_data/logs
 user_data/plot
-user_data/config-private.json
-user_data/config-test.json
+user_data/config-*.json
 freqtrade-plot.html
 freqtrade-profit-plot.html
 freqtrade/rpc/api_server/ui/*
 dhparam/*.pem
+nginx-conf/*
+docker-compose.yml 
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
