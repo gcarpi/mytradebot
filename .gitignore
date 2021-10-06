@@ -12,8 +12,6 @@ freqtrade-plot.html
 freqtrade-profit-plot.html
 freqtrade/rpc/api_server/ui/*
 dhparam/*.pem
-nginx-conf/*
-docker-compose.yml 
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
