@@ -18,7 +18,7 @@ services:
       --db-url sqlite:////freqtrade/user_data/tradesv3.liverun.sqlite
       --config /freqtrade/user_data/config.json
       --config /freqtrade/user_data/config-private.json
-      --strategy Moon
+      --strategy Williams
     networks:
       - app-network
 

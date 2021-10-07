@@ -67,7 +67,7 @@ class Elliot(IStrategy):
         "0": 0.10,
     }
 
-    stoploss = -0.1
+    stoploss = -0.15
 
     # Multi Offset
     base_nb_candles_buy = IntParameter(
