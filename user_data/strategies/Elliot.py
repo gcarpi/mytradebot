@@ -64,13 +64,10 @@ class Elliot(IStrategy):
     }
 
     minimal_roi = {
-        "0": 0.08,
-        "60": 0.04,
-        "90": 0.02,
-        "120": 0.01
+        "0": 0.10,
     }
 
-    stoploss = -0.15
+    stoploss = -0.1
 
     # Multi Offset
     base_nb_candles_buy = IntParameter(
@@ -138,10 +135,10 @@ class Elliot(IStrategy):
         }
     }
 
-    trailing_stop = False
+    trailing_stop = True
     trailing_stop_positive = 0.001
     trailing_stop_positive_offset = 0.016
-    trailing_only_offset_is_reached = False
+    trailing_only_offset_is_reached = True
 
     use_custom_stoploss = False
 
@@ -167,8 +164,6 @@ class Elliot(IStrategy):
             'ma_offset_sell': {'color': 'orange'},
         },
     }
-
-    #############################################################
 
     buy_condition_1_enable = CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True)
     buy_condition_2_enable = CategoricalParameter([True, False], default=True, space='buy', optimize=False, load=True)
