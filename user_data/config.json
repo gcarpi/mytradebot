@@ -118,7 +118,7 @@
   "pairlists": [
     {
       "method": "VolumePairList",
-      "number_assets": 40,
+      "number_assets": 60,
       "sort_key": "quoteVolume",
       "refresh_period": 86400,
       "min_value": 0,
@@ -134,7 +134,7 @@
     },
     {
       "method": "RangeStabilityFilter",
-      "lookback_days": 1,
+      "lookback_days": 3,
       "min_rate_of_change": 0.05,
       "max_rate_of_change": 1,
       "refresh_period": 1440
@@ -147,7 +147,7 @@
       "refresh_period": 1800
     },
     {
-      "method": "ShuffleFilter"
+      "method": "PerformanceFilter"
     }
   ],
 
