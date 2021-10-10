@@ -1,7 +1,7 @@
 {
   "max_open_trades": 3,
 
-  "stake_currency": "USDT",
+  "stake_currency": "BUSD",
 
   "stake_amount": "unlimited",
 
@@ -62,38 +62,41 @@
       "rateLimit": 500
     },
     "pair_whitelist": [
-      "ETH/USDT",
-      "SOL/USDT",
-      "DOT/USDT",
-      "UNI/USDT",
-      "LUNA/USDT",
-      "AVAX/USDT",
-      "LINK/USDT",
-      "LTC/USDT",
-      "ALGO/USDT",
-      "ATOM/USDT",
-      "ICP/USDT",
-      "MATIC/USDT",
-      "FIL/USDT",
-      "VET/USDT",
-      "ETC/USDT",
-      "AXS/USDT",
-      "FTT/USDT",
-      "XTZ/USDT",
-      "THETA/USDT",
-      "EGLD/USDT",
-      "XEC/USDT",
-      "XMR/USDT",
-      "CAKE/USDT",
-      "EOS/USDT",
-      "AAVE/USDT",
-      "FTM/USDT",
-      "OMG/USDT",
-      "DYDX/USDT",
-      "IDEX/USDT",
-      "SRM/USDT",
-      "ONE/USDT",
-      "ICX/USDT"
+      "BTC/BUSD",
+      "ETH/BUSD",
+      "XRP/BUSD",
+      "SOL/BUSD",
+      "DOT/BUSD",
+      "LUNA/BUSD",
+      "UNI/BUSD",
+      "AVAX/BUSD",
+      "LINK/BUSD",
+      "LTC/BUSD",
+      "BCH/BUSD",
+      "ALGO/BUSD",
+      "MATIC/BUSD",
+      "XLM/BUSD",
+      "ICP/BUSD",
+      "ATOM/BUSD",
+      "VET/BUSD",
+      "TRX/BUSD",
+      "ETC/BUSD",
+      "THETA/BUSD",
+      "FTT/BUSD",
+      "XTZ/BUSD",
+      "FTM/BUSD",
+      "EGLD/BUSD",
+      "XMR/BUSD",
+      "EOS/BUSD",
+      "CAKE/BUSD",
+      "AAVE/BUSD",
+      "NEAR/BUSD",
+      "GRT/BUSD",
+      "NEO/BUSD",
+      "MKR/BUSD",
+      "ONE/BUSD",
+      "STX/BUSD",
+      "AR/BUSD"
     ],
     "pair_blacklist": [
       "(BNB)/.*",
@@ -115,11 +118,14 @@
   "pairlists": [
     {
       "method": "VolumePairList",
-      "number_assets": 100,
+      "number_assets": 40,
       "sort_key": "quoteVolume",
-      "refresh_period": 1800
+      "refresh_period": 86400,
+      "min_value": 0,
+      "lookback_timeframe": "1d",
+      "lookback_period": 7
     },
-    { "method": "AgeFilter", "min_days_listed": 14 },
+    { "method": "AgeFilter", "min_days_listed": 30 },
     { "method": "SpreadFilter", "max_spread_ratio": 0.005 },
     {
       "method": "PriceFilter",
@@ -138,12 +144,7 @@
       "lookback_days": 3,
       "min_volatility": 0.02,
       "max_volatility": 0.75,
-      "refresh_period": 43200
-    },
-    {
-      "method": "VolumePairList",
-      "number_assets": 100,
-      "sort_key": "quoteVolume"
+      "refresh_period": 1800
     },
     {
       "method": "ShuffleFilter"
