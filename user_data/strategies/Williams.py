@@ -180,6 +180,7 @@ class Williams(IStrategy):
             "method": "CooldownPeriod",
             "stop_duration_candles": self.cooldown_lookback.value
         })
+        
         prot.append({
             "method": "LowProfitPairs",
             "lookback_period_candles": self.low_profit_lookback.value,

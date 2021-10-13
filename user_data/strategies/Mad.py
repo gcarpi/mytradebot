@@ -3,9 +3,11 @@ import numpy as np
 import talib.abstract as ta
 from freqtrade.persistence import Trade
 from freqtrade.strategy.interface import IStrategy
+from freqtrade.strategy import DecimalParameter, IntParameter
 from pandas import DataFrame
 from datetime import datetime, timedelta
 from freqtrade.strategy import merge_informative_pair
+from functools import reduce
 
 # SSL Channels
 def SSLChannels(dataframe, length = 7):
@@ -29,8 +31,10 @@ class Mad(IStrategy):
       "139": 0
     }
 
-    stoploss = -0.192
+    # Disabled stoploss
+    stoploss = -0.99
 
+    # Timeframe
     timeframe = '5m'
     inf_1h = '1h'
 
@@ -55,6 +59,40 @@ class Mad(IStrategy):
     # Number of candles the strategy requires before producing valid signals
     startup_candle_count: int = 200
 
+    # Protections
+    protection_params = {
+        "low_profit_lookback": 48,
+        "low_profit_min_req": 0.04,
+        "low_profit_stop_duration": 14,
+        "cooldown_lookback": 2,
+        "stoploss_lookback": 72,
+        "stoploss_stop_duration": 20,
+    }
+
+    cooldown_lookback = IntParameter(2, 48, default=2, space="protection", optimize=True)
+    low_profit_lookback = IntParameter(2, 60, default=20, space="protection", optimize=True)
+    low_profit_stop_duration = IntParameter(12, 200, default=20, space="protection", optimize=True)
+    low_profit_min_req = DecimalParameter(-0.05, 0.05, default=-0.05, space="protection", decimals=2, optimize=True)
+
+    @property
+    def protections(self):
+        prot = []
+
+        prot.append({
+            "method": "CooldownPeriod",
+            "stop_duration_candles": self.cooldown_lookback.value
+        })
+        
+        prot.append({
+            "method": "LowProfitPairs",
+            "lookback_period_candles": self.low_profit_lookback.value,
+            "trade_limit": 1,
+            "stop_duration": int(self.low_profit_stop_duration.value),
+            "required_profit": self.low_profit_min_req.value
+        })
+
+        return prot
+
     def custom_stoploss(self, pair: str, trade: 'Trade', current_time: datetime,
                         current_rate: float, current_profit: float, **kwargs) -> float:
 
@@ -77,7 +115,7 @@ class Mad(IStrategy):
 
         informative_1h['rsi'] = ta.RSI(informative_1h, timeperiod=14)
 
-        ssl_down_1h, ssl_up_1h = SSLChannels(informative_1h, 20)
+        ssl_down_1h, ssl_up_1h = SSLChannels(informative_1h, 10)
         informative_1h['ssl_down'] = ssl_down_1h
         informative_1h['ssl_up'] = ssl_up_1h
 
@@ -111,68 +149,85 @@ class Mad(IStrategy):
         return dataframe
 
     def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        # Conditions
+        conditions = []
+        dataframe.loc[:, 'buy_tag'] = ''
 
-        dataframe.loc[
+        check_volume = (
+            (dataframe['volume_mean_slow'] > dataframe['volume_mean_slow'].shift(30) * 0.4) &   # Try to exclude pumping
+            (dataframe['volume'] < (dataframe['volume'].shift() * 4)) &                         # Don't buy if someone drop the market
+            (dataframe['volume'] > 0)                                                           # Make sure Volume is not 0
+        )
+        
+        buy_ema_200 = (
+            (dataframe['close'] > dataframe['ema_200']) &
+            (dataframe['close'] > dataframe['ema_200_1h']) &
+            (dataframe['close'] < dataframe['ema_slow']) &
+            (dataframe['close'] < 0.99 * dataframe['bb_lowerband']) &
+            check_volume
+        )
 
+        buy_ema_slow = (
+            (dataframe['close'] < dataframe['ema_slow']) &
+            (dataframe['close'] < 0.975 * dataframe['bb_lowerband']) &
+            (dataframe['rsi_1h'] < 36) &
+            check_volume
+        )
 
-            (  # strategy ClucMay72018
-                (dataframe['close'] > dataframe['ema_200']) &
-                (dataframe['close'] > dataframe['ema_200_1h']) &
-                (dataframe['close'] < dataframe['ema_slow']) &
-                (dataframe['close'] < 0.99 * dataframe['bb_lowerband']) &                           # Guard is on, candle should dig not so hard (0,99)
-                (dataframe['volume_mean_slow'] > dataframe['volume_mean_slow'].shift(30) * 0.4) &   # Try to exclude pumping
-                # (dataframe['volume'] < (dataframe['volume'].shift() * 4)) &                        # Don't buy if someone drop the market.
-                (dataframe['volume'] > 0)
-            )
-            |
-            (  # strategy ClucMay72018 
-                (dataframe['close'] < dataframe['ema_slow']) &
-                (dataframe['close'] < 0.975 * dataframe['bb_lowerband']) &                          # Guard is off, candle should dig hard (0,975) 
-                (dataframe['volume'] < (dataframe['volume'].shift() * 4)) &                         # Don't buy if someone drop the market.
-                (dataframe['rsi_1h'] < 36) &                                                        # Buy only at dip
-                (dataframe['volume_mean_slow'] > dataframe['volume_mean_slow'].shift(30) * 0.4) &   # Try to exclude pumping
-                (dataframe['volume'] > 0) # Make sure Volume is not 0
-            )
-            |
-            (  # strategy MACD Low buy 
-                (dataframe['close'] > dataframe['ema_200']) &
-                (dataframe['close'] > dataframe['ema_200_1h']) &
-                (dataframe['ema_26'] > dataframe['ema_12']) &
-                ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.02)) &
-                ((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open']/100)) &
-                (dataframe['volume'] < (dataframe['volume'].shift() * 4)) &                         # Don't buy if someone drop the market.
-                (dataframe['close'] < (dataframe['bb_lowerband'])) &
-                (dataframe['volume_mean_slow'] > dataframe['volume_mean_slow'].shift(30) * 0.4) &   # Try to exclude pumping
-                (dataframe['volume'] > 0) # Make sure Volume is not 0
-            )
-            |
-            (  # strategy MACD Low buy 
-                (dataframe['ema_26'] > dataframe['ema_12']) &
-                ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.02)) &
-                ((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open']/100)) &
-                (dataframe['volume'] < (dataframe['volume'].shift() * 4)) &                 # Don't buy if someone drop the market.
-                (dataframe['close'] < (dataframe['bb_lowerband'])) &
-                (dataframe['volume'] > 0) # Make sure Volume is not 0
-            )
-            |
-            (
-                (dataframe['close'] < dataframe['sma_5']) &
-                (dataframe['ssl_up_1h'] > dataframe['ssl_down_1h']) &
-                (dataframe['ema_slow'] > dataframe['ema_200']) &
-                (dataframe['ema_50_1h'] > dataframe['ema_200_1h']) &
-                (dataframe['rsi'] < dataframe['rsi_1h'] - 50) &
-                (dataframe['volume'] > 0)
-            ),
-            'buy'
-        ] = 1
+        buy_ema_200_ema_26 = (
+            (dataframe['close'] > dataframe['ema_200']) &
+            (dataframe['close'] > dataframe['ema_200_1h']) &
+            (dataframe['ema_26'] > dataframe['ema_12']) &
+            ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.02)) &
+            ((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open']/100)) &
+            (dataframe['close'] < (dataframe['bb_lowerband'])) &
+            check_volume
+        )
+
+        buy_ema_26_ema_12 = (
+            (dataframe['ema_26'] > dataframe['ema_12']) &
+            ((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * 0.02)) &
+            ((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open']/100)) &
+            (dataframe['close'] < (dataframe['bb_lowerband'])) &
+            check_volume
+        )
+
+        buy_ema_50 = (
+            (dataframe['close'] < dataframe['sma_5']) &
+            (dataframe['ssl_up_1h'] > dataframe['ssl_down_1h']) &
+            (dataframe['ema_slow'] > dataframe['ema_200']) &
+            (dataframe['ema_50_1h'] > dataframe['ema_200_1h']) &
+            (dataframe['rsi'] < dataframe['rsi_1h'] - 50) &
+            check_volume
+        )
+
+        # Append conditions
+        conditions.append(buy_ema_200)
+        dataframe.loc[buy_ema_200, 'buy_tag'] += 'buy_ema_200 '
+
+        conditions.append(buy_ema_slow)
+        dataframe.loc[buy_ema_slow, 'buy_tag'] += 'buy_ema_slow '
+
+        conditions.append(buy_ema_200_ema_26)
+        dataframe.loc[buy_ema_200_ema_26, 'buy_tag'] += 'buy_ema_200_ema_26 '
+
+        conditions.append(buy_ema_26_ema_12)
+        dataframe.loc[buy_ema_26_ema_12, 'buy_tag'] += 'buy_ema_26_ema_12 '
+
+        conditions.append(buy_ema_50)
+        dataframe.loc[buy_ema_50, 'buy_tag'] += 'buy_ema_50 '
+
+        # Set conditions
+        if conditions:
+            dataframe.loc[reduce(lambda x, y: x | y, conditions), 'buy' ] = 1
 
         return dataframe
 
     def populate_sell_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         dataframe.loc[
             (
-                (dataframe['close'] > dataframe['bb_middleband'] * 1) &                  # Don't be gready, sell fast
-                (dataframe['volume'] > 0) # Make sure Volume is not 0
+                (dataframe['close'] > dataframe['bb_upperband'] * 1) &                 # Don't be gready, sell fast
+                (dataframe['volume'] > 0)                                              # Make sure Volume is not 0
             )
             ,
             'sell'
