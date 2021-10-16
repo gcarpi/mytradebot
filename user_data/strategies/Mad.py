@@ -3,10 +3,9 @@ import numpy as np
 import talib.abstract as ta
 from freqtrade.persistence import Trade
 from freqtrade.strategy.interface import IStrategy
-from freqtrade.strategy import DecimalParameter, IntParameter
+from freqtrade.strategy import merge_informative_pair, DecimalParameter, IntParameter, stoploss_from_open
 from pandas import DataFrame
 from datetime import datetime, timedelta
-from freqtrade.strategy import merge_informative_pair
 from functools import reduce
 
 # SSL Channels
@@ -23,12 +22,37 @@ def SSLChannels(dataframe, length = 7):
 
 class Mad(IStrategy):
     INTERFACE_VERSION = 2
+    
+    # Buy params
+    buy_params = {
+        "volume_shift": 7
+    }
 
+    # Sell params
+    sell_params = {
+      "pHSL": -0.169,
+      "pPF_1": 0.013,
+      "pPF_2": 0.057,
+      "pSL_1": 0.011,
+      "pSL_2": 0.067
+    }
+
+    # Hyperopt buy params
+    volume_shift = IntParameter(0, 100, default=10, space="buy", optimize=True)
+
+    # Hyperopt sell params
+    pHSL = DecimalParameter(-0.200, -0.040, default=-0.08, decimals=3, space='sell', load=True)
+    pPF_1 = DecimalParameter(0.008, 0.020, default=0.016, decimals=3, space='sell', load=True)
+    pSL_1 = DecimalParameter(0.008, 0.020, default=0.011, decimals=3, space='sell', load=True)
+    pPF_2 = DecimalParameter(0.040, 0.100, default=0.080, decimals=3, space='sell', load=True)
+    pSL_2 = DecimalParameter(0.020, 0.070, default=0.040, decimals=3, space='sell', load=True)
+
+    # ROI
     minimal_roi = {
-      "0": 0.034,
-      "19": 0.022,
-      "45": 0.012,
-      "139": 0
+      "0": 0.193,
+      "20": 0.063,
+      "79": 0.028,
+      "117": 0
     }
 
     # Disabled stoploss
@@ -46,9 +70,9 @@ class Mad(IStrategy):
 
     # Trailing stoploss
     trailing_stop = True
-    trailing_only_offset_is_reached = True
-    trailing_stop_positive = 0.173
-    trailing_stop_positive_offset = 0.239
+    trailing_stop_positive = 0.288
+    trailing_stop_positive_offset = 0.306
+    trailing_only_offset_is_reached = False
 
     # Custom stoploss
     use_custom_stoploss = True
@@ -59,14 +83,19 @@ class Mad(IStrategy):
     # Number of candles the strategy requires before producing valid signals
     startup_candle_count: int = 200
 
+    # Hyperopt sell params
+    pHSL = DecimalParameter(-0.200, -0.040, default=-0.08, decimals=3, space='sell', load=True)
+    pPF_1 = DecimalParameter(0.008, 0.020, default=0.016, decimals=3, space='sell', load=True)
+    pSL_1 = DecimalParameter(0.008, 0.020, default=0.011, decimals=3, space='sell', load=True)
+    pPF_2 = DecimalParameter(0.040, 0.100, default=0.080, decimals=3, space='sell', load=True)
+    pSL_2 = DecimalParameter(0.020, 0.070, default=0.040, decimals=3, space='sell', load=True)
+
     # Protections
     protection_params = {
-        "low_profit_lookback": 48,
-        "low_profit_min_req": 0.04,
-        "low_profit_stop_duration": 14,
-        "cooldown_lookback": 2,
-        "stoploss_lookback": 72,
-        "stoploss_stop_duration": 20,
+      "cooldown_lookback": 9,
+      "low_profit_lookback": 4,
+      "low_profit_min_req": -0.04,
+      "low_profit_stop_duration": 64
     }
 
     cooldown_lookback = IntParameter(2, 48, default=2, space="protection", optimize=True)
@@ -96,9 +125,24 @@ class Mad(IStrategy):
     def custom_stoploss(self, pair: str, trade: 'Trade', current_time: datetime,
                         current_rate: float, current_profit: float, **kwargs) -> float:
 
-        if (current_profit < 0) & (current_time - timedelta(minutes=240) > trade.open_date_utc):
-            return 0.01
-        return 0.99
+        # hard stoploss profit
+        HSL = self.pHSL.value
+        PF_1 = self.pPF_1.value
+        SL_1 = self.pSL_1.value
+        PF_2 = self.pPF_2.value
+        SL_2 = self.pSL_2.value
+
+        if (current_profit > PF_2):
+            sl_profit = SL_2 + (current_profit - PF_2)
+        elif (current_profit > PF_1):
+            sl_profit = SL_1 + ((current_profit - PF_1) * (SL_2 - SL_1) / (PF_2 - PF_1))
+        else:
+            sl_profit = HSL
+
+        if (sl_profit >= current_profit):
+            return -0.99
+
+        return stoploss_from_open(sl_profit, current_profit)
 
     def informative_pairs(self):
         pairs = self.dp.current_whitelist()
@@ -154,9 +198,9 @@ class Mad(IStrategy):
         dataframe.loc[:, 'buy_tag'] = ''
 
         check_volume = (
-            (dataframe['volume_mean_slow'] > dataframe['volume_mean_slow'].shift(30) * 0.4) &   # Try to exclude pumping
-            (dataframe['volume'] < (dataframe['volume'].shift() * 4)) &                         # Don't buy if someone drop the market
-            (dataframe['volume'] > 0)                                                           # Make sure Volume is not 0
+            (dataframe['volume_mean_slow'] > dataframe['volume_mean_slow'].shift(self.volume_shift.value) * 0.4) &      # Try to exclude pumping
+            (dataframe['volume'] < (dataframe['volume'].shift() * self.volume_shift.value)) &                           # Don't buy if someone drop the market
+            (dataframe['volume'] > 0)                                                                                   # Make sure Volume is not 0
         )
         
         buy_ema_200 = (

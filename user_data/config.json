@@ -59,60 +59,10 @@
     "ccxt_config": { "enableRateLimit": true },
     "ccxt_async_config": {
       "enableRateLimit": true,
-      "rateLimit": 500
+      "rateLimit": 200
     },
-    "pair_whitelist": [
-      "BTC/BUSD",
-      "ETH/BUSD",
-      "XRP/BUSD",
-      "SOL/BUSD",
-      "DOT/BUSD",
-      "LUNA/BUSD",
-      "UNI/BUSD",
-      "AVAX/BUSD",
-      "LINK/BUSD",
-      "LTC/BUSD",
-      "BCH/BUSD",
-      "ALGO/BUSD",
-      "MATIC/BUSD",
-      "XLM/BUSD",
-      "ICP/BUSD",
-      "ATOM/BUSD",
-      "VET/BUSD",
-      "TRX/BUSD",
-      "ETC/BUSD",
-      "THETA/BUSD",
-      "FTT/BUSD",
-      "XTZ/BUSD",
-      "FTM/BUSD",
-      "EGLD/BUSD",
-      "XMR/BUSD",
-      "EOS/BUSD",
-      "CAKE/BUSD",
-      "AAVE/BUSD",
-      "NEAR/BUSD",
-      "GRT/BUSD",
-      "NEO/BUSD",
-      "MKR/BUSD",
-      "ONE/BUSD",
-      "STX/BUSD",
-      "AR/BUSD"
-    ],
-    "pair_blacklist": [
-      "(BNB)/.*",
-
-      "(BTC|ADA|COTI)/.*",
-
-      ".*(_PREMIUM|BEAR|BULL|DOWN|HALF|HEDGE|UP|[1235][SL])/.*",
-
-      "(AUD|BRZ|CAD|CHF|EUR|GBP|HKD|IDRT|JPY|NGN|RUB|SGD|TRY|UAH|USD|ZAR)/.*",
-
-      "(BUSD|CUSDT|DAI|PAXG|SUSD|TUSD|USDC|USDP|USDT|VAI)/.*",
-
-      "(ACM|AFA|ALA|ALL|APL|ASR|ATM|BAR|CAI|CITY|FOR|GAL|GOZ|IBFK|JUV|LEG|LOCK-1|NAVI|NMR|NOV|OG|PFL|PSG|ROUSH|STV|TH|TRA|UCH|UFC|YBO)/.*",
-
-      "(CHZ|CTXC|HBAR|NMR|SHIB|SLP|XVS|ONG|ARDR)/.*"
-    ]
+    "pair_whitelist": [],
+    "pair_blacklist": []
   },
 
   "pairlists": [
