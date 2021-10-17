@@ -2,8 +2,6 @@
   "stake_currency": "BUSD",
   "exchange": {
     "pair_whitelist": [
-      "BTC/BUSD",
-      "ETH/BUSD",
       "TVK/BUSD",
       "DOGE/BUSD",
       "XRP/BUSD",

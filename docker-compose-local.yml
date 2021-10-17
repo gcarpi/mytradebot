@@ -11,7 +11,7 @@ services:
     volumes:
       - "./user_data:/freqtrade/user_data"
     ports:
-      - "8080:8080"
+      - "127.0.0.1:8080:8080"
     command: >
       trade
       --logfile /freqtrade/user_data/logs/freqtrade.log
@@ -31,7 +31,7 @@ services:
     volumes:
       - "./user_data:/freqtrade/user_data"
     ports:
-      - "8081:8081"
+      - "127.0.0.1:8081:8081"
     command: >
       trade
       --logfile /freqtrade/user_data/logs/freqtrade2.log
@@ -51,7 +51,7 @@ services:
     volumes:
       - "./user_data:/freqtrade/user_data"
     ports:
-      - "8082:8082"
+      - "127.0.0.1:8082:8082"
     command: >
       trade
       --logfile /freqtrade/user_data/logs/freqtrade3.log
