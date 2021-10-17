@@ -115,5 +115,10 @@
 
       "(CHZ|CTXC|HBAR|SHIB|SLP|XVS|ONG|ARDR)/.*"
     ]
-  }
+  },
+  "pairlists": [
+    {
+      "method": "StaticPairList"
+    }
+  ]
 }

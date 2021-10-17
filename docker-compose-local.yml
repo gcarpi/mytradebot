@@ -15,12 +15,11 @@ services:
     command: >
       trade
       --logfile /freqtrade/user_data/logs/freqtrade.log
-      --db-url sqlite:////freqtrade/user_data/ClucHAnix.dryrun.sqlite
+      --db-url sqlite:////freqtrade/user_data/InfinityV7155.dryrun.sqlite
       --config /freqtrade/user_data/config.json
-      --config /freqtrade/user_data/config-static.json
-      --config /freqtrade/user_data/binance-pairlist-busd.json
-      --config /freqtrade/user_data/config-cluch-anix.json
-      --strategy ClucHAnix
+      --config /freqtrade/user_data/binance-pairlist-volume-usdt.json
+      --config /freqtrade/user_data/config-infinity.json
+      --strategy InfinityV7155
 
   freqtrade2:
     image: freqtrade:local
@@ -38,7 +37,6 @@ services:
       --logfile /freqtrade/user_data/logs/freqtrade2.log
       --db-url sqlite:////freqtrade/user_data/Mad.dryrun.sqlite
       --config /freqtrade/user_data/config.json
-      --config /freqtrade/user_data/config-static.json
       --config /freqtrade/user_data/binance-pairlist-busd.json
       --config /freqtrade/user_data/config-mad.json
       --strategy Mad
@@ -59,7 +57,6 @@ services:
       --logfile /freqtrade/user_data/logs/freqtrade3.log
       --db-url sqlite:////freqtrade/user_data/NASOSv4.dryrun.sqlite
       --config /freqtrade/user_data/config.json
-      --config /freqtrade/user_data/config-static.json
       --config /freqtrade/user_data/binance-pairlist-busd.json
       --config /freqtrade/user_data/config-NASOSv4.json
       --strategy NASOSv4
