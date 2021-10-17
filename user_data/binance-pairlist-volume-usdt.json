@@ -1,9 +1,7 @@
 {
   "stake_currency": "USDT",
   "exchange": {
-    "pair_whitelist": [
-      ".*/USDT"
-    ],
+    "pair_whitelist": [".*/USDT"],
     "pair_blacklist": [
       "(BNB)/.*",
 
@@ -25,12 +23,12 @@
       "method": "VolumePairList",
       "number_assets": 75,
       "sort_key": "quoteVolume",
-      "refresh_period": 86400,
+      "refresh_period": 1800,
       "min_value": 0,
       "lookback_timeframe": "1d",
       "lookback_period": 7
     },
-    { "method": "AgeFilter", "min_days_listed": 30 },
+    { "method": "AgeFilter", "min_days_listed": 14 },
     { "method": "SpreadFilter", "max_spread_ratio": 0.005 },
     {
       "method": "PriceFilter",
@@ -40,15 +38,14 @@
       "method": "RangeStabilityFilter",
       "lookback_days": 3,
       "min_rate_of_change": 0.1,
-      "max_rate_of_change": 1,
-      "refresh_period": 1440
+      "refresh_period": 1800
     },
     {
       "method": "VolatilityFilter",
       "lookback_days": 3,
       "min_volatility": 0.02,
       "max_volatility": 0.75,
-      "refresh_period": 1800
+      "refresh_period": 43200
     },
     { "method": "ShuffleFilter" }
   ]
