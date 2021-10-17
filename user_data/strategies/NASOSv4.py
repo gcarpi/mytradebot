@@ -55,7 +55,6 @@ def EWO(dataframe, ema_length=5, ema2_length=35):
 
     return emadif
 
-
 class NASOSv4(IStrategy):
     INTERFACE_VERSION = 2
 

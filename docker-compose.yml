@@ -1,24 +1,69 @@
 version: '3'
 
 services:
-  freqtrade:
+  freqtrade_one:
     image: freqtrade:local
     build:
       context: .
       dockerfile: "./Dockerfile.custom"
     restart: unless-stopped
-    container_name: freqtrade
+    container_name: freqtrade_one
     volumes:
       - "./user_data:/freqtrade/user_data"
     ports:
       - "8080:8080"
     command: >
       trade
-      --logfile /freqtrade/user_data/logs/freqtrade.log
-      --db-url sqlite:////freqtrade/user_data/tradesv3.liverun.sqlite
+      --logfile /freqtrade/user_data/logs/freqtrade_one.log
+      --db-url sqlite:////freqtrade/user_data/freqtrade_one.sqlite
       --config /freqtrade/user_data/config.json
-      --config /freqtrade/user_data/config-private.json
-      --strategy Williams
+      --config /freqtrade/user_data/binance-pairlist-volume-usdt.json
+      --config /freqtrade/user_data/config-freqtrade_one.json
+      --strategy InfinityV7155
+    networks:
+      - app-network
+
+  freqtrade_two:
+    image: freqtrade:local
+    build:
+      context: .
+      dockerfile: "./Dockerfile.custom"
+    restart: unless-stopped
+    container_name: freqtrade_two
+    volumes:
+      - "./user_data:/freqtrade/user_data"
+    ports:
+      - "8081:8081"
+    command: >
+      trade
+      --logfile /freqtrade/user_data/logs/freqtrade_two.log
+      --db-url sqlite:////freqtrade/user_data/freqtrade_two.sqlite
+      --config /freqtrade/user_data/config.json
+      --config /freqtrade/user_data/binance-pairlist-volume-busd.json
+      --config /freqtrade/user_data/config-freqtrade_two.json
+      --strategy Mad
+    networks:
+      - app-network
+
+  freqtrade_three:
+    image: freqtrade:local
+    build:
+      context: .
+      dockerfile: "./Dockerfile.custom"
+    restart: unless-stopped
+    container_name: freqtrade_three
+    volumes:
+      - "./user_data:/freqtrade/user_data"
+    ports:
+      - "8082:8082"
+    command: >
+      trade
+      --logfile /freqtrade/user_data/logs/freqtrade_three.log
+      --db-url sqlite:////freqtrade/user_data/freqtrade_three.sqlite
+      --config /freqtrade/user_data/config.json
+      --config /freqtrade/user_data/binance-pairlist-busd.json
+      --config /freqtrade/user_data/config-freqtrade_three.json
+      --strategy NASOSv4
     networks:
       - app-network
 
@@ -28,32 +73,34 @@ services:
     restart: unless-stopped
     ports:
       - "80:80"
-      - "443:443"
+      # - "443:443"
     volumes:
       - ./views:/var/www/html
       - ./nginx-conf:/etc/nginx/conf.d
-      - certbot-etc:/etc/letsencrypt
-      - certbot-var:/var/lib/letsencrypt
-      - ./dhparam:/etc/ssl/certs
+      # - certbot-etc:/etc/letsencrypt
+      # - certbot-var:/var/lib/letsencrypt
+      # - ./dhparam:/etc/ssl/certs
     depends_on:
-      - freqtrade
+      - freqtrade_one
+      - freqtrade_two
+      - freqtrade_three
     networks:
       - app-network
 
-  certbot:
-    image: certbot/certbot:arm32v6-latest
-    container_name: certbot
-    volumes:
-      - certbot-etc:/etc/letsencrypt
-      - certbot-var:/var/lib/letsencrypt
-      - ./views:/var/www/html
-    depends_on:
-      - webserver
-    command: certonly --webroot --webroot-path=/var/www/html --email gcarpi.developer@gmail.com --agree-tos --no-eff-email --force-renewal -d mytradebot.guilhermecarpi.com -d www.mytradebot.guilhermecarpi.com
+  # certbot:
+  #   image: certbot/certbot:arm32v6-latest
+  #   container_name: certbot
+  #   volumes:
+  #     - certbot-etc:/etc/letsencrypt
+  #     - certbot-var:/var/lib/letsencrypt
+  #     - ./views:/var/www/html
+  #   depends_on:
+  #     - webserver
+  #   command: certonly --webroot --webroot-path=/var/www/html --email gcarpi.developer@gmail.com --agree-tos --no-eff-email --staging -d mytradebot.guilhermecarpi.com -d www.mytradebot.guilhermecarpi.com
 
-volumes:
-  certbot-etc:
-  certbot-var:
+# volumes:
+#   certbot-etc:
+#   certbot-var:
 
 networks:
   app-network:
