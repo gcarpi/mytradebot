@@ -1,8 +1,6 @@
 {
   "max_open_trades": 5,
 
-  "stake_currency": "BUSD",
-
   "stake_amount": "unlimited",
 
   "amend_last_stake_amount ": true,

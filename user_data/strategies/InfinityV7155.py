@@ -139,7 +139,7 @@ class InfinityV7155(IStrategy):
     has_downtime_protection = False
 
     # Do you want to use the hold feature? (with hold-trades.json)
-    holdSupportEnabled = True
+    holdSupportEnabled = False
 
     # Coin Metrics
     coin_metrics = {}
@@ -163,17 +163,6 @@ class InfinityV7155(IStrategy):
 
     # Number of candles the strategy requires before producing valid signals
     startup_candle_count: int = 480
-
-    # Optional order type mapping.
-    order_types = {
-        'buy': 'limit',
-        'sell': 'limit',
-        'trailing_stop_loss': 'limit',
-        'stoploss': 'limit',
-        'stoploss_on_exchange': False,
-        'stoploss_on_exchange_interval': 60,
-        'stoploss_on_exchange_limit_ratio': 0.99
-    }
 
     #############################################################
 
