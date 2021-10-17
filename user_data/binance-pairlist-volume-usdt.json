@@ -38,7 +38,7 @@
       "method": "RangeStabilityFilter",
       "lookback_days": 3,
       "min_rate_of_change": 0.1,
-      "refresh_period": 1800
+      "refresh_period": 2000
     },
     {
       "method": "VolatilityFilter",
