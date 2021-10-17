@@ -79,8 +79,6 @@
     ]
   },
 
-  "pairlists": [],
-
   "edge": {
     "enabled": false,
     "process_throttle_secs": 3600,
