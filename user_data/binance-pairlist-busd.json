@@ -1,9 +1,9 @@
 {
+  "stake_currency": "BUSD",
   "exchange": {
     "pair_whitelist": [
       "BTC/BUSD",
       "ETH/BUSD",
-      "AXS/BUSD",
       "TVK/BUSD",
       "DOGE/BUSD",
       "XRP/BUSD",
@@ -28,7 +28,6 @@
       "COMP/BUSD",
       "UNI/BUSD",
       "WING/BUSD",
-      "CVP/BUSD",
       "NANO/BUSD",
       "ATOM/BUSD",
       "MANA/BUSD",
