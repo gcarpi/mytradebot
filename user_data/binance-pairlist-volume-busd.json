@@ -25,12 +25,12 @@
       "method": "VolumePairList",
       "number_assets": 75,
       "sort_key": "quoteVolume",
-      "refresh_period": 90000,
+      "refresh_period": 88000,
       "min_value": 0,
       "lookback_timeframe": "1d",
       "lookback_period": 7
     },
-    { "method": "AgeFilter", "min_days_listed": 30 },
+    { "method": "AgeFilter", "min_days_listed": 15 },
     { "method": "SpreadFilter", "max_spread_ratio": 0.005 },
     {
       "method": "PriceFilter",
@@ -38,18 +38,18 @@
     },
     {
       "method": "RangeStabilityFilter",
-      "lookback_days": 3,
+      "lookback_days": 5,
       "min_rate_of_change": 0.1,
       "max_rate_of_change": 1,
       "refresh_period": 1800
     },
     {
       "method": "VolatilityFilter",
-      "lookback_days": 3,
+      "lookback_days": 5,
       "min_volatility": 0.02,
       "max_volatility": 0.75,
-      "refresh_period": 2400
+      "refresh_period": 3600
     },
-    { "method": "ShuffleFilter" }
+    { "method": "PerformanceFilter", "minutes": 1440 }
   ]
 }

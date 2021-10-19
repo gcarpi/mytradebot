@@ -49,10 +49,7 @@ class Mad(IStrategy):
 
     # ROI
     minimal_roi = {
-      "0": 0.193,
-      "20": 0.063,
-      "79": 0.028,
-      "117": 0
+        "0": 10
     }
 
     # Disabled stoploss
@@ -72,7 +69,7 @@ class Mad(IStrategy):
     trailing_stop = True
     trailing_stop_positive = 0.288
     trailing_stop_positive_offset = 0.306
-    trailing_only_offset_is_reached = False
+    trailing_only_offset_is_reached = True
 
     # Custom stoploss
     use_custom_stoploss = True
