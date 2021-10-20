@@ -28,7 +28,7 @@
       "lookback_timeframe": "1d",
       "lookback_period": 7
     },
-    { "method": "AgeFilter", "min_days_listed": 15 },
+    { "method": "AgeFilter", "min_days_listed": 14 },
     { "method": "SpreadFilter", "max_spread_ratio": 0.005 },
     {
       "method": "PriceFilter",
@@ -36,18 +36,17 @@
     },
     {
       "method": "RangeStabilityFilter",
-      "lookback_days": 5,
+      "lookback_days": 3,
       "min_rate_of_change": 0.1,
-      "max_rate_of_change": 1,
-      "refresh_period": 3600
+      "refresh_period": 2000
     },
     {
       "method": "VolatilityFilter",
-      "lookback_days": 5,
+      "lookback_days": 3,
       "min_volatility": 0.02,
       "max_volatility": 0.75,
-      "refresh_period": 4200
+      "refresh_period": 43200
     },
-    { "method": "PerformanceFilter", "minutes": 1440 }
+    { "method": "ShuffleFilter" }
   ]
 }
