@@ -1,6 +1,10 @@
 {
   "stake_currency": "BUSD",
+  
   "exchange": {
+    "name": "binance",
+    "key": "",
+    "secret": "",
     "pair_whitelist": [
       "DOGE/BUSD",
       "XRP/BUSD",
@@ -97,6 +101,7 @@
       "(CHZ|CTXC|HBAR|SHIB|SLP|XVS|ONG|ARDR)/.*"
     ]
   },
+
   "pairlists": [
     {
       "method": "StaticPairList"

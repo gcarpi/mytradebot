@@ -1,6 +1,9 @@
 {
   "stake_currency": "USDT",
   "exchange": {
+    "name": "binance",
+    "key": "",
+    "secret": "",
     "pair_whitelist": [
       "AAVE/USDT",
       "ADA/USDT",

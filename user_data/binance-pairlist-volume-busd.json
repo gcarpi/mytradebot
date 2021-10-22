@@ -1,6 +1,9 @@
 {
   "stake_currency": "BUSD",
   "exchange": {
+    "name": "binance",
+    "key": "",
+    "secret": "",
     "pair_whitelist": [
       ".*/BUSD"
     ],

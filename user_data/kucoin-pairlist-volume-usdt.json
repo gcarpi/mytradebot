@@ -2,39 +2,34 @@
   "stake_currency": "USDT",
 
   "exchange": {
-    "name": "binance",
+    "name": "kucoin",
     "key": "",
     "secret": "",
     "pair_whitelist": [".*/USDT"],
     "pair_blacklist": [
-      "(BNB)/.*",
+      "KCS/.*",
 
-      "(BTC|ETH|ADA|COTI)/.*",
+      ".*(3|3L|3S)/.*",
 
-      ".*(_PREMIUM|BEAR|BULL|DOWN|HALF|HEDGE|UP|[1235][SL])/.*",
+      "(AUD|EUR|GBP|CHF|CAD|JPY)/.*",
 
-      "(AUD|BRZ|CAD|CHF|EUR|GBP|HKD|IDRT|JPY|NGN|RUB|SGD|TRY|UAH|USD|ZAR)/.*",
-
-      "(BUSD|CUSDT|DAI|PAXG|SUSD|TUSD|USDC|USDP|USDT|VAI)/.*",
+      "(BUSD|USDT|TUSD|USDC|CUSDT|DAI)/.*",
 
       "(ACM|AFA|ALA|ALL|APL|ASR|ATM|BAR|CAI|CITY|FOR|GAL|GOZ|IBFK|JUV|LEG|LOCK-1|NAVI|NMR|NOV|OG|PFL|PSG|ROUSH|STV|TH|TRA|UCH|UFC|YBO)/.*",
-
-      "(CHZ|CTXC|HBAR|SHIB|SLP|XVS|ONG|ARDR)/.*"
+      
+      "(CHZ|SHIB|SLP|XVS|MEM|AMPL|XYM|POLX|CARR|SKEY|MASK|KLV|TLOS)/.*"
     ]
   },
-  
+
   "pairlists": [
     {
       "method": "VolumePairList",
-      "number_assets": 75,
+      "number_assets": 50,
       "sort_key": "quoteVolume",
-      "refresh_period": 86400,
-      "min_value": 0,
-      "lookback_timeframe": "1d",
-      "lookback_period": 7
+      "refresh_period": 1800
     },
     { "method": "AgeFilter", "min_days_listed": 14 },
-    { "method": "SpreadFilter", "max_spread_ratio": 0.005 },
+    { "method": "SpreadFilter", "max_spread_ratio": 0.006 },
     {
       "method": "PriceFilter",
       "min_price": 0.001
@@ -43,7 +38,7 @@
       "method": "RangeStabilityFilter",
       "lookback_days": 3,
       "min_rate_of_change": 0.1,
-      "refresh_period": 2000
+      "refresh_period": 1800
     },
     {
       "method": "VolatilityFilter",
