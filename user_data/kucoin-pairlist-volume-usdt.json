@@ -5,6 +5,7 @@
     "name": "kucoin",
     "key": "",
     "secret": "",
+    "password": "",
     "pair_whitelist": [".*/USDT"],
     "pair_blacklist": [
       "KCS/.*",

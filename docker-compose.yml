@@ -17,9 +17,9 @@ services:
       --logfile /freqtrade/user_data/logs/freqtrade_one.log
       --db-url sqlite:////freqtrade/user_data/freqtrade_one.sqlite
       --config /freqtrade/user_data/config.json
-      --config /freqtrade/user_data/binance-pairlist-volume-usdt.json
+      --config /freqtrade/user_data/kucoin-pairlist-volume-usdt.json
       --config /freqtrade/user_data/config-freqtrade_one.json
-      --strategy InfinityV7155
+      --strategy Infinity
     networks:
       - app-network
 
@@ -39,53 +39,9 @@ services:
       --logfile /freqtrade/user_data/logs/freqtrade_two.log
       --db-url sqlite:////freqtrade/user_data/freqtrade_two.sqlite
       --config /freqtrade/user_data/config.json
-      --config /freqtrade/user_data/binance-pairlist-volume-busd.json
-      --config /freqtrade/user_data/config-freqtrade_two.json
-      --strategy Mad
-    networks:
-      - app-network
-
-  freqtrade_three:
-    image: freqtrade:local
-    build:
-      context: .
-      dockerfile: "./Dockerfile.custom"
-    restart: unless-stopped
-    container_name: freqtrade_three
-    volumes:
-      - "./user_data:/freqtrade/user_data"
-    ports:
-      - "127.0.0.1:8082:8082"
-    command: >
-      trade
-      --logfile /freqtrade/user_data/logs/freqtrade_three.log
-      --db-url sqlite:////freqtrade/user_data/freqtrade_three.sqlite
-      --config /freqtrade/user_data/config.json
-      --config /freqtrade/user_data/binance-pairlist-volume-busd.json
-      --config /freqtrade/user_data/config-freqtrade_three.json
-      --strategy NASOSv4
-    networks:
-      - app-network
-
-  freqtrade_four:
-    image: freqtrade:local
-    build:
-      context: .
-      dockerfile: "./Dockerfile.custom"
-    restart: unless-stopped
-    container_name: freqtrade_four
-    volumes:
-      - "./user_data:/freqtrade/user_data"
-    ports:
-      - "127.0.0.1:8083:8083"
-    command: >
-      trade
-      --logfile /freqtrade/user_data/logs/freqtrade_four.log
-      --db-url sqlite:////freqtrade/user_data/freqtrade_four.sqlite
-      --config /freqtrade/user_data/config.json
       --config /freqtrade/user_data/kucoin-pairlist-volume-usdt.json
-      --config /freqtrade/user_data/config-freqtrade_four.json
-      --strategy InfinityV721
+      --config /freqtrade/user_data/config-freqtrade_two.json
+      --strategy InfinitySMA
     networks:
       - app-network
 
@@ -95,34 +51,14 @@ services:
     restart: unless-stopped
     ports:
       - "80:80"
-      # - "443:443"
     volumes:
       - ./views:/var/www/html
       - ./nginx-conf:/etc/nginx/conf.d
-      # - certbot-etc:/etc/letsencrypt
-      # - certbot-var:/var/lib/letsencrypt
-      # - ./dhparam:/etc/ssl/certs
     depends_on:
       - freqtrade_one
       - freqtrade_two
-      - freqtrade_three
     networks:
       - app-network
-
-  # certbot:
-  #   image: certbot/certbot:arm32v6-latest
-  #   container_name: certbot
-  #   volumes:
-  #     - certbot-etc:/etc/letsencrypt
-  #     - certbot-var:/var/lib/letsencrypt
-  #     - ./views:/var/www/html
-  #   depends_on:
-  #     - webserver
-  #   command: certonly --webroot --webroot-path=/var/www/html --email gcarpi.developer@gmail.com --agree-tos --no-eff-email --staging -d mytradebot.guilhermecarpi.com -d www.mytradebot.guilhermecarpi.com
-
-# volumes:
-#   certbot-etc:
-#   certbot-var:
 
 networks:
   app-network:
