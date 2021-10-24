@@ -19,7 +19,7 @@ services:
       --config /freqtrade/user_data/config.json
       --config /freqtrade/user_data/kucoin-pairlist-volume-usdt.json
       --config /freqtrade/user_data/config-freqtrade_one.json
-      --strategy Infinity
+      --strategy InfinitySMA
     networks:
       - app-network
 
@@ -41,7 +41,7 @@ services:
       --config /freqtrade/user_data/config.json
       --config /freqtrade/user_data/kucoin-pairlist-volume-usdt.json
       --config /freqtrade/user_data/config-freqtrade_two.json
-      --strategy InfinitySMA
+      --strategy InfinityV772
     networks:
       - app-network
 

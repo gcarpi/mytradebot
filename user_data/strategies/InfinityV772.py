@@ -1,13 +1,13 @@
+import copy
 import logging
 import pathlib
 import rapidjson
 import freqtrade.vendor.qtpylib.indicators as qtpylib
 import numpy as np
 import talib.abstract as ta
-from freqtrade.misc import json_load
+from freqtrade.misc import json_load, file_dump_json
 from freqtrade.strategy.interface import IStrategy
 from freqtrade.strategy import merge_informative_pair, timeframe_to_minutes
-from freqtrade.strategy import DecimalParameter, IntParameter, CategoricalParameter
 from freqtrade.exchange import timeframe_to_prev_date
 from pandas import DataFrame, Series, concat
 from functools import reduce
@@ -16,9 +16,17 @@ from freqtrade.persistence import Trade
 from datetime import datetime, timedelta
 from technical.util import resample_to_interval, resampled_merge
 from technical.indicators import zema, VIDYA, ichimoku
-import pandas_ta as pta
+
 
 log = logging.getLogger(__name__)
+
+
+try:
+    import pandas_ta as pta
+except ImportError:
+    log.error("IMPORTANT - please install the pandas_ta python module which is needed for this strategy. If you're running Docker, add RUN pip install pandas_ta to your Dockerfile, otherwise run: pip install pandas_ta")
+else:
+    log.info("pandas_ta successfully imported")
 
 
 ###########################################################################################################
@@ -57,6 +65,7 @@ log = logging.getLogger(__name__)
 ##      output of the telegram status command.                                                           ##
 ##    * Regardless of the defined profit ratio(s), the strategy MUST still produce a SELL signal for the ##
 ##      HOLD support logic to run                                                                        ##
+##    * This feature can be completely disabled with the holdSupportEnabled parameter                    ##
 ##                                                                                                       ##
 ###########################################################################################################
 ##               DONATIONS                                                                               ##
@@ -70,7 +79,7 @@ log = logging.getLogger(__name__)
 ###########################################################################################################
 
 
-class InfinityV763(IStrategy):
+class InfinityV772(IStrategy):
     INTERFACE_VERSION = 2
 
     plot_config = {
@@ -113,6 +122,9 @@ class InfinityV763(IStrategy):
 
     # Exchange Downtime protection
     has_downtime_protection = False
+
+    # Do you want to use the hold feature? (with hold-trades.json)
+    holdSupportEnabled = True
 
     # Run "populate_indicators()" only for new candle.
     process_only_new_candles = True
@@ -179,6 +191,10 @@ class InfinityV763(IStrategy):
         "buy_condition_38_enable": True,
         "buy_condition_39_enable": True,
         "buy_condition_40_enable": True,
+        "buy_condition_41_enable": True,
+        "buy_condition_42_enable": True,
+        "buy_condition_43_enable": True,
+        "buy_condition_44_enable": True,
         #############
     }
 
@@ -642,20 +658,20 @@ class InfinityV763(IStrategy):
         23: {
             "ema_fast"                  : False,
             "ema_fast_len"              : "50",
-            "ema_slow"                  : False,
-            "ema_slow_len"              : "50",
-            "close_above_ema_fast"      : True,
+            "ema_slow"                  : True,
+            "ema_slow_len"              : "15",
+            "close_above_ema_fast"      : False,
             "close_above_ema_fast_len"  : "200",
-            "close_above_ema_slow"      : True,
+            "close_above_ema_slow"      : False,
             "close_above_ema_slow_len"  : "200",
-            "sma200_rising"             : False,
-            "sma200_rising_val"         : "50",
+            "sma200_rising"             : True,
+            "sma200_rising_val"         : "24",
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "50",
             "safe_dips"                 : True,
-            "safe_dips_type"            : "50",
-            "safe_pump"                 : False,
-            "safe_pump_type"            : "50",
+            "safe_dips_type"            : "110",
+            "safe_pump"                 : True,
+            "safe_pump_type"            : "100",
             "safe_pump_period"          : "24",
             "btc_1h_not_downtrend"      : False
         },
@@ -708,14 +724,14 @@ class InfinityV763(IStrategy):
             "close_above_ema_fast_len"  : "200",
             "close_above_ema_slow"      : False,
             "close_above_ema_slow_len"  : "200",
-            "sma200_rising"             : False,
+            "sma200_rising"             : True,
             "sma200_rising_val"         : "30",
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "50",
-            "safe_dips"                 : False,
-            "safe_dips_type"            : "10",
-            "safe_pump"                 : False,
-            "safe_pump_type"            : "10",
+            "safe_dips"                 : True,
+            "safe_dips_type"            : "70",
+            "safe_pump"                 : True,
+            "safe_pump_type"            : "20",
             "safe_pump_period"          : "36",
             "btc_1h_not_downtrend"      : True
         },
@@ -812,8 +828,8 @@ class InfinityV763(IStrategy):
             "sma200_rising_val"         : "30",
             "sma200_1h_rising"          : False,
             "sma200_1h_rising_val"      : "50",
-            "safe_dips"                 : False,
-            "safe_dips_type"            : "110",
+            "safe_dips"                 : True,
+            "safe_dips_type"            : "50",
             "safe_pump"                 : False,
             "safe_pump_type"            : "10",
             "safe_pump_period"          : "48",
@@ -998,6 +1014,86 @@ class InfinityV763(IStrategy):
             "safe_pump_type"            : "50",
             "safe_pump_period"          : "48",
             "btc_1h_not_downtrend"      : True
+        },
+        41: {
+            "ema_fast"                  : False,
+            "ema_fast_len"              : "12",
+            "ema_slow"                  : False,
+            "ema_slow_len"              : "12",
+            "close_above_ema_fast"      : False,
+            "close_above_ema_fast_len"  : "200",
+            "close_above_ema_slow"      : False,
+            "close_above_ema_slow_len"  : "200",
+            "sma200_rising"             : False,
+            "sma200_rising_val"         : "30",
+            "sma200_1h_rising"          : False,
+            "sma200_1h_rising_val"      : "20",
+            "safe_dips"                 : True,
+            "safe_dips_type"            : "50",
+            "safe_pump"                 : False,
+            "safe_pump_type"            : "120",
+            "safe_pump_period"          : "24",
+            "btc_1h_not_downtrend"      : True
+        },
+        42: {
+            "ema_fast"                  : False,
+            "ema_fast_len"              : "12",
+            "ema_slow"                  : False,
+            "ema_slow_len"              : "12",
+            "close_above_ema_fast"      : False,
+            "close_above_ema_fast_len"  : "200",
+            "close_above_ema_slow"      : False,
+            "close_above_ema_slow_len"  : "200",
+            "sma200_rising"             : False,
+            "sma200_rising_val"         : "30",
+            "sma200_1h_rising"          : False,
+            "sma200_1h_rising_val"      : "20",
+            "safe_dips"                 : True,
+            "safe_dips_type"            : "110",
+            "safe_pump"                 : False,
+            "safe_pump_type"            : "100",
+            "safe_pump_period"          : "24",
+            "btc_1h_not_downtrend"      : True
+        },
+        43: {
+            "ema_fast"                  : False,
+            "ema_fast_len"              : "12",
+            "ema_slow"                  : False,
+            "ema_slow_len"              : "12",
+            "close_above_ema_fast"      : False,
+            "close_above_ema_fast_len"  : "200",
+            "close_above_ema_slow"      : False,
+            "close_above_ema_slow_len"  : "200",
+            "sma200_rising"             : False,
+            "sma200_rising_val"         : "30",
+            "sma200_1h_rising"          : False,
+            "sma200_1h_rising_val"      : "20",
+            "safe_dips"                 : True,
+            "safe_dips_type"            : "70",
+            "safe_pump"                 : False,
+            "safe_pump_type"            : "100",
+            "safe_pump_period"          : "24",
+            "btc_1h_not_downtrend"      : True
+        },
+        44: {
+            "ema_fast"                  : False,
+            "ema_fast_len"              : "12",
+            "ema_slow"                  : False,
+            "ema_slow_len"              : "12",
+            "close_above_ema_fast"      : False,
+            "close_above_ema_fast_len"  : "200",
+            "close_above_ema_slow"      : False,
+            "close_above_ema_slow_len"  : "200",
+            "sma200_rising"             : False,
+            "sma200_rising_val"         : "30",
+            "sma200_1h_rising"          : False,
+            "sma200_1h_rising_val"      : "20",
+            "safe_dips"                 : False,
+            "safe_dips_type"            : "100",
+            "safe_pump"                 : False,
+            "safe_pump_type"            : "100",
+            "safe_pump_period"          : "24",
+            "btc_1h_not_downtrend"      : False
         }
     }
 
@@ -1308,7 +1404,7 @@ class InfinityV763(IStrategy):
 
     buy_rsi_21 = 14.0
     buy_rsi_1h_21 = 28.0
-    buy_cti_21 = -0.9
+    buy_cti_21 = -0.902
     buy_volume_21 = 2.0
 
     buy_volume_22 = 2.0
@@ -1317,10 +1413,13 @@ class InfinityV763(IStrategy):
     buy_ewo_22 = 5.8
     buy_rsi_22 = 36.0
 
-    buy_bb_offset_23 = 0.985
-    buy_ewo_23 = 6.2
-    buy_rsi_23 = 32.4
-    buy_rsi_1h_23 = 70.0
+    buy_23_bb_offset = 0.984
+    buy_23_ewo = 7.8
+    buy_23_rsi = 32.4
+    buy_23_rsi_1h = 80.0
+    buy_23_cti = -0.66
+    buy_23_r = -80.0
+    buy_23_r_1h = -80.0
 
     buy_24_rsi_max = 50.0
     buy_24_rsi_1h_min = 66.9
@@ -1329,10 +1428,10 @@ class InfinityV763(IStrategy):
     buy_25_rsi_4 = 38.0
     buy_25_cti = -0.76
 
-    buy_26_zema_low_offset = 0.9
-    buy_26_cti = -0.9
-    buy_26_r = -80.0
-    buy_26_r_1h = -80.0
+    buy_26_zema_low_offset = 0.94
+    buy_26_cti = -0.91
+    buy_26_r = -35.0
+    buy_26_r_1h = -60.0
     buy_26_volume = 2.0
 
     buy_27_wr_max = 90.0
@@ -1355,9 +1454,10 @@ class InfinityV763(IStrategy):
     buy_30_rsi = 40.0
     buy_30_cti = -0.88
 
-    buy_31_ma_offset = 0.94
-    buy_31_ewo = -19.0
-    buy_31_wr = -98.4
+    buy_31_ma_offset = 0.962
+    buy_31_ewo = -10.4
+    buy_31_wr = -90.0
+    buy_31_cti = -0.89
 
     buy_32_ma_offset = 0.934
     buy_32_dip = 0.005
@@ -1404,6 +1504,30 @@ class InfinityV763(IStrategy):
     buy_40_cti = -0.8
     buy_40_r = -90.0
     buy_40_r_1h = -90.0
+
+    buy_41_cti_1h = -0.84
+    buy_41_r_1h = -42.0
+    buy_41_ma_offset = 0.96
+    buy_41_cti = -0.8
+    buy_41_r = -75.0
+
+    buy_42_cti_1h = 0.5
+    buy_42_r_1h = -46.0
+    buy_42_ema_open_mult = 0.018
+    buy_42_bb_offset = 0.992
+
+    buy_43_cti_1h = 0.5
+    buy_43_r_1h = -80.0
+    buy_43_bb40_bbdelta_close = 0.046
+    buy_43_bb40_closedelta_close = 0.02
+    buy_43_bb40_tail_bbdelta = 0.5
+    buy_43_cti = -0.6
+    buy_43_r = -90.0
+
+    buy_44_ma_offset = 0.982
+    buy_44_ewo = -18.143
+    buy_44_cti = -0.8
+    buy_44_r_1h = -75.0
 
     # Sell
 
@@ -1461,9 +1585,9 @@ class InfinityV763(IStrategy):
     sell_custom_profit_bull_4 = 0.05
     sell_custom_rsi_under_bull_4 = 42.0
     sell_custom_profit_bull_5 = 0.06
-    sell_custom_rsi_under_bull_5 = 45.0
+    sell_custom_rsi_under_bull_5 = 49.0
     sell_custom_profit_bull_6 = 0.07
-    sell_custom_rsi_under_bull_6 = 48.0
+    sell_custom_rsi_under_bull_6 = 50.0
     sell_custom_profit_bull_7 = 0.08
     sell_custom_rsi_under_bull_7 = 54.0
     sell_custom_profit_bull_8 = 0.09
@@ -1628,8 +1752,8 @@ class InfinityV763(IStrategy):
     sell_trail_down_4 = 0.02
 
     # Under & near EMA200, accept profit
-    sell_custom_profit_under_profit_min_1 = 0.0
-    sell_custom_profit_under_profit_max_1 = 0.02
+    sell_custom_profit_under_profit_min_1 = 0.001
+    sell_custom_profit_under_profit_max_1 = 0.008
     sell_custom_profit_under_rel_1 = 0.024
     sell_custom_profit_under_rsi_diff_1 = 4.4
 
@@ -1704,7 +1828,7 @@ class InfinityV763(IStrategy):
 
     #############################################################
 
-    hold_trade_ids = None
+    hold_trades_cache = None
 
     @staticmethod
     def get_hold_trades_config_file():
@@ -1728,100 +1852,13 @@ class InfinityV763(IStrategy):
         )
 
     def load_hold_trades_config(self):
-        if self.hold_trade_ids is not None:
-            # Already loaded
-            return
+        if self.hold_trades_cache is None:
+            hold_trades_config_file = NostalgiaForInfinityNext.get_hold_trades_config_file()
+            if hold_trades_config_file:
+                self.hold_trades_cache = HoldsCache(hold_trades_config_file)
 
-        # Default Values
-        self.hold_trade_ids = {}
-
-        # Update values from config file, if it exists
-        hold_trades_config_file = NostalgiaForInfinityNext.get_hold_trades_config_file()
-        if not hold_trades_config_file:
-            return
-
-        with hold_trades_config_file.open('r') as f:
-            trade_ids = None
-            hold_trades_config = None
-            try:
-                hold_trades_config = json_load(f)
-            except rapidjson.JSONDecodeError as exc:
-                log.error("Failed to load JSON from %s: %s", hold_trades_config_file, exc)
-            else:
-                trade_ids = hold_trades_config.get("trade_ids")
-
-            if not trade_ids:
-                return
-
-            open_trades = {
-                trade.id: trade for trade in Trade.get_trades_proxy(is_open=True)
-            }
-
-            if isinstance(trade_ids, dict):
-                # New syntax
-                for trade_id, profit_ratio in trade_ids.items():
-                    try:
-                        trade_id = int(trade_id)
-                    except ValueError:
-                        log.error(
-                            "The trade_id(%s) defined under 'trade_ids' in %s is not an integer",
-                            trade_id, hold_trades_config_file
-                        )
-                        continue
-                    if not isinstance(profit_ratio, float):
-                        log.error(
-                            "The 'profit_ratio' config value(%s) for trade_id %s in %s is not a float",
-                            profit_ratio,
-                            trade_id,
-                            hold_trades_config_file
-                        )
-                    if trade_id in open_trades:
-                        formatted_profit_ratio = "{}%".format(profit_ratio * 100)
-                        log.warning(
-                            "The trade %s is configured to HOLD until the profit ratio of %s is met",
-                            open_trades[trade_id],
-                            formatted_profit_ratio
-                        )
-                        self.hold_trade_ids[trade_id] = profit_ratio
-                    else:
-                        log.warning(
-                            "The trade_id(%s) is no longer open. Please remove it from 'trade_ids' in %s",
-                            trade_id,
-                            hold_trades_config_file
-                        )
-            else:
-                # Initial Syntax
-                profit_ratio = hold_trades_config.get("profit_ratio")
-                if profit_ratio:
-                    if not isinstance(profit_ratio, float):
-                        log.error(
-                            "The 'profit_ratio' config value(%s) in %s is not a float",
-                            profit_ratio,
-                            hold_trades_config_file
-                        )
-                else:
-                    profit_ratio = 0.005
-                formatted_profit_ratio = "{}%".format(profit_ratio * 100)
-                for trade_id in trade_ids:
-                    if not isinstance(trade_id, int):
-                        log.error(
-                            "The trade_id(%s) defined under 'trade_ids' in %s is not an integer",
-                            trade_id, hold_trades_config_file
-                        )
-                        continue
-                    if trade_id in open_trades:
-                        log.warning(
-                            "The trade %s is configured to HOLD until the profit ratio of %s is met",
-                            open_trades[trade_id],
-                            formatted_profit_ratio
-                        )
-                        self.hold_trade_ids[trade_id] = profit_ratio
-                    else:
-                        log.warning(
-                            "The trade_id(%s) is no longer open. Please remove it from 'trade_ids' in %s",
-                            trade_id,
-                            hold_trades_config_file
-                        )
+        if self.hold_trades_cache:
+            self.hold_trades_cache.load()
 
     def bot_loop_start(self, **kwargs) -> None:
         """
@@ -1830,7 +1867,7 @@ class InfinityV763(IStrategy):
         (e.g. gather some remote resource for comparison)
         :param **kwargs: Ensure to keep this here so updates to this won't break your strategy.
         """
-        if self.config['runmode'].value in ('live', 'dry_run'):
+        if self.holdSupportEnabled and self.config['runmode'].value in ('live', 'dry_run'):
             self.load_hold_trades_config()
         return super().bot_loop_start(**kwargs)
 
@@ -2292,23 +2329,22 @@ class InfinityV763(IStrategy):
         return False, None
 
     def sell_quick_mode(self, current_profit: float, max_profit:float, last_candle, previous_candle_1) -> tuple:
-        if (0.06 > current_profit > 0.02) and (last_candle['rsi_14'] > 79.0):
+        if (0.06 > current_profit > 0.02) and (last_candle['rsi_14'] > 80.0):
             return True, 'signal_profit_q_1'
 
-        if (0.06 > current_profit > 0.02) and (last_candle['cti'] > 0.9):
+        if (0.06 > current_profit > 0.02) and (last_candle['cti'] > 0.95):
             return True, 'signal_profit_q_2'
 
         if (last_candle['close'] < last_candle['atr_high_thresh_q']) and (previous_candle_1['close'] > previous_candle_1['atr_high_thresh_q']):
-            if (current_profit > 0.0):
+            if (0.05 > current_profit > 0.02):
                 return True, 'signal_profit_q_atr'
             elif (current_profit < -0.08):
                 return True, 'signal_stoploss_q_atr'
 
-        if (current_profit > 0.0):
-            if (last_candle['pm'] <= last_candle['pmax_thresh']) and (last_candle['close'] > last_candle['sma_21'] * 1.1):
-                return True, 'signal_profit_q_pmax_bull'
-            if (last_candle['pm'] > last_candle['pmax_thresh']) and (last_candle['close'] > last_candle['sma_21'] * 1.016):
-                return True, 'signal_profit_q_pmax_bear'
+        if (0.04 > current_profit > 0.02) and (last_candle['pm'] <= last_candle['pmax_thresh']) and (last_candle['close'] > last_candle['sma_21'] * 1.1):
+            return True, 'signal_profit_q_pmax_bull'
+        if (0.045 > current_profit > 0.003) and (last_candle['pm'] > last_candle['pmax_thresh']) and (last_candle['close'] > last_candle['sma_21'] * 1.016):
+            return True, 'signal_profit_q_pmax_bear'
 
         return False, None
 
@@ -2486,7 +2522,7 @@ class InfinityV763(IStrategy):
         # Sell signal 6
         elif self.sell_condition_6_enable and (last_candle['close'] < last_candle['ema_200']) and (last_candle['close'] > last_candle['ema_50']) and (last_candle['rsi_14'] > self.sell_rsi_under_6):
             if (current_profit > 0.0):
-                    return 'sell_signal_6_1' + ' ( ' + buy_tag + ')'
+                return 'sell_signal_6_1' + ' ( ' + buy_tag + ')'
             elif (max_loss > 0.25):
                 return 'sell_signal_6_2' + ' ( ' + buy_tag + ')'
 
@@ -2639,6 +2675,9 @@ class InfinityV763(IStrategy):
         # Williams %R
         informative_1h['r_480'] = williams_r(informative_1h, period=480)
 
+        # CTI
+        informative_1h['cti'] = pta.cti(informative_1h["close"], length=20)
+
         # Ichimoku
         ichi = ichimoku(informative_1h, conversion_line_period=20, base_line_periods=60, laggin_span=120, displacement=30)
         informative_1h['chikou_span'] = ichi['chikou_span']
@@ -2759,6 +2798,7 @@ class InfinityV763(IStrategy):
         dataframe['ema_12'] = ta.EMA(dataframe, timeperiod=12)
         dataframe['ema_13'] = ta.EMA(dataframe, timeperiod=13)
         dataframe['ema_15'] = ta.EMA(dataframe, timeperiod=15)
+        dataframe['ema_16'] = ta.EMA(dataframe, timeperiod=16)
         dataframe['ema_20'] = ta.EMA(dataframe, timeperiod=20)
         dataframe['ema_25'] = ta.EMA(dataframe, timeperiod=25)
         dataframe['ema_26'] = ta.EMA(dataframe, timeperiod=26)
@@ -3267,10 +3307,13 @@ class InfinityV763(IStrategy):
                     # Non-Standard protections
 
                     # Logic
-                    item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_bb_offset_23))
-                    item_buy_logic.append(dataframe['ewo'] > self.buy_ewo_23)
-                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_rsi_23)
-                    item_buy_logic.append(dataframe['rsi_14_1h'] < self.buy_rsi_1h_23)
+                    item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_23_bb_offset))
+                    item_buy_logic.append(dataframe['ewo'] > self.buy_23_ewo)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_23_cti)
+                    item_buy_logic.append(dataframe['r_480'] > self.buy_23_r)
+                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_23_r_1h)
+                    item_buy_logic.append(dataframe['rsi_14'] < self.buy_23_rsi)
+                    item_buy_logic.append(dataframe['rsi_14_1h'] < self.buy_23_rsi_1h)
 
                 # Condition #24
                 elif index == 24:
@@ -3364,6 +3407,7 @@ class InfinityV763(IStrategy):
                     item_buy_logic.append(dataframe['close'] < dataframe['zlema_68'] * self.buy_31_ma_offset )
                     item_buy_logic.append(dataframe['ewo'] < self.buy_31_ewo)
                     item_buy_logic.append(dataframe['r_480'] < self.buy_31_wr)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_31_cti)
 
                 # Condition #32 - Quick mode buy
                 elif index == 32:
@@ -3484,6 +3528,61 @@ class InfinityV763(IStrategy):
                     item_buy_logic.append(dataframe['r_480'] > self.buy_40_r)
                     item_buy_logic.append(dataframe['r_480_1h'] > self.buy_40_r_1h)
 
+                # Condition #41
+                elif index == 41:
+                    # Non-Standard protections (add below)
+
+                    # Logic
+                    item_buy_logic.append(dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(12))
+                    item_buy_logic.append(dataframe['ema_200_1h'].shift(12) > dataframe['ema_200_1h'].shift(24))
+                    item_buy_logic.append(dataframe['cti_1h'] < self.buy_41_cti_1h)
+                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_41_r_1h)
+                    item_buy_logic.append(dataframe['close'] < dataframe['sma_75'] * self.buy_41_ma_offset)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_41_cti)
+                    item_buy_logic.append(dataframe['r_480'] < self.buy_41_r)
+
+                # Condition #42
+                elif index == 42:
+                    # Non-Standard protections (add below)
+
+                    # Logic
+                    item_buy_logic.append(dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(12))
+                    item_buy_logic.append(dataframe['ema_200_1h'].shift(12) > dataframe['ema_200_1h'].shift(24))
+                    item_buy_logic.append(dataframe['cti_1h'] < self.buy_42_cti_1h)
+                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_42_r_1h)
+                    item_buy_logic.append(dataframe['ema_26'] > dataframe['ema_12'])
+                    item_buy_logic.append((dataframe['ema_26'] - dataframe['ema_12']) > (dataframe['open'] * self.buy_42_ema_open_mult))
+                    item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
+                    item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_42_bb_offset))
+
+                # Condition #43
+                elif index == 43:
+                    # Non-Standard protections
+
+                    # Logic
+                    item_buy_logic.append(dataframe['ema_200_1h'] > dataframe['ema_200_1h'].shift(12))
+                    item_buy_logic.append(dataframe['ema_200_1h'].shift(12) > dataframe['ema_200_1h'].shift(24))
+                    item_buy_logic.append(dataframe['cti_1h'] < self.buy_43_cti_1h)
+                    item_buy_logic.append(dataframe['r_480_1h'] > self.buy_43_r_1h)
+                    item_buy_logic.append(dataframe['bb40_2_low'].shift().gt(0))
+                    item_buy_logic.append(dataframe['bb40_2_delta'].gt(dataframe['close'] * self.buy_43_bb40_bbdelta_close))
+                    item_buy_logic.append(dataframe['closedelta'].gt(dataframe['close'] * self.buy_43_bb40_closedelta_close))
+                    item_buy_logic.append(dataframe['tail'].lt(dataframe['bb40_2_delta'] * self.buy_43_bb40_tail_bbdelta))
+                    item_buy_logic.append(dataframe['close'].lt(dataframe['bb40_2_low'].shift()))
+                    item_buy_logic.append(dataframe['close'].le(dataframe['close'].shift()))
+                    item_buy_logic.append(dataframe['cti'] < self.buy_43_cti)
+                    item_buy_logic.append(dataframe['r_480'] > self.buy_43_r)
+
+                # Condition #44
+                elif index == 44:
+                    # Non-Standard protections
+
+                    # Logic
+                    item_buy_logic.append(dataframe['close'] < (dataframe['ema_16'] * self.buy_44_ma_offset))
+                    item_buy_logic.append(dataframe['ewo'] < self.buy_44_ewo)
+                    item_buy_logic.append(dataframe['cti'] < self.buy_44_cti)
+                    item_buy_logic.append(dataframe['r_480_1h'] < self.buy_44_r_1h)
+
                 item_buy_logic.append(dataframe['volume'] > 0)
                 item_buy = reduce(lambda x, y: x & y, item_buy_logic)
                 dataframe.loc[item_buy, 'buy_tag'] += str(index) + ' '
@@ -3524,18 +3623,22 @@ class InfinityV763(IStrategy):
             False aborts the process
         """
         # Just to be sure our hold data is loaded, should be a no-op call after the first bot loop
-        if self.config['runmode'].value in ('live', 'dry_run'):
+        if self.holdSupportEnabled and self.config['runmode'].value in ('live', 'dry_run'):
             self.load_hold_trades_config()
 
-            if not self.hold_trade_ids:
+            if not self.hold_trades_cache:
+                # Cache hasn't been setup, likely because the corresponding file does not exist, sell
+                return True
+
+            if not self.hold_trades_cache.data:
                 # We have no pairs we want to hold until profit, sell
                 return True
 
-            if trade.id not in self.hold_trade_ids:
+            if trade.id not in self.hold_trades_cache.data:
                 # This pair is not on the list to hold until profit, sell
                 return True
 
-            trade_profit_ratio = self.hold_trade_ids[trade.id]
+            trade_profit_ratio = self.hold_trades_cache.data[trade.id]
             current_profit_ratio = trade.calc_profit_ratio(rate)
             if sell_reason == "force_sell":
                 formatted_profit_ratio = "{}%".format(trade_profit_ratio * 100)
@@ -3599,7 +3702,7 @@ def williams_r(dataframe: DataFrame, period: int = 14) -> Series:
     WR = Series(
         (highest_high - dataframe["close"]) / (highest_high - lowest_low),
         name="{0} Williams %R".format(period),
-    )
+        )
 
     return WR * -100
 
@@ -3778,3 +3881,130 @@ def SSLChannels(dataframe, length = 7):
     sslDown = np.where(hlv < 0, smaHigh, smaLow)
     sslUp = np.where(hlv < 0, smaLow, smaHigh)
     return sslDown, sslUp
+
+
+class Cache:
+
+    def __init__(self, path):
+        self.path = path
+        self.data = {}
+        self._mtime = None
+        self._previous_data = {}
+        try:
+            self.load()
+        except FileNotFoundError:
+            pass
+
+    def load(self):
+        if not self._mtime or self.path.stat().st_mtime_ns != self._mtime:
+            self._load()
+
+    def save(self):
+        if self.data != self._previous_data:
+            self._save()
+
+    def process_loaded_data(self, data):
+        return data
+
+    def _load(self):
+        # This method only exists to simplify unit testing
+        with self.path.open("r") as rfh:
+            try:
+                data = json_load(rfh)
+            except rapidjson.JSONDecodeError as exc:
+                log.error("Failed to load JSON from %s: %s", self.path, exc)
+            else:
+                self.data = self.process_loaded_data(data)
+                self._previous_data = copy.deepcopy(self.data)
+                self._mtime = self.path.stat().st_mtime_ns
+
+    def _save(self):
+        # This method only exists to simplify unit testing
+        file_dump_json(self.path, self.data, is_zip=False, log=True)
+        self._mtime = self.path.stat().st_mtime
+        self._previous_data = copy.deepcopy(self.data)
+
+
+class HoldsCache(Cache):
+
+    def save(self):
+        raise RuntimeError("The holds cache does not allow programatical save")
+
+    def process_loaded_data(self, data):
+        trade_ids = data.get("trade_ids")
+
+        if not trade_ids:
+            return {}
+
+        rdata = {}
+        open_trades = {
+            trade.id: trade for trade in Trade.get_trades_proxy(is_open=True)
+        }
+
+        if isinstance(trade_ids, dict):
+            # New syntax
+            for trade_id, profit_ratio in trade_ids.items():
+                try:
+                    trade_id = int(trade_id)
+                except ValueError:
+                    log.error(
+                        "The trade_id(%s) defined under 'trade_ids' in %s is not an integer",
+                        trade_id, self.path
+                    )
+                    continue
+                if not isinstance(profit_ratio, float):
+                    log.error(
+                        "The 'profit_ratio' config value(%s) for trade_id %s in %s is not a float",
+                        profit_ratio,
+                        trade_id,
+                        self.path
+                    )
+                if trade_id in open_trades:
+                    formatted_profit_ratio = "{}%".format(profit_ratio * 100)
+                    log.warning(
+                        "The trade %s is configured to HOLD until the profit ratio of %s is met",
+                        open_trades[trade_id],
+                        formatted_profit_ratio
+                    )
+                    rdata[trade_id] = profit_ratio
+                else:
+                    log.warning(
+                        "The trade_id(%s) is no longer open. Please remove it from 'trade_ids' in %s",
+                        trade_id,
+                        self.path
+                    )
+        else:
+            # Initial Syntax
+            profit_ratio = data.get("profit_ratio")
+            if profit_ratio:
+                if not isinstance(profit_ratio, float):
+                    log.error(
+                        "The 'profit_ratio' config value(%s) in %s is not a float",
+                        profit_ratio,
+                        self.path
+                    )
+            else:
+                profit_ratio = 0.005
+            formatted_profit_ratio = "{}%".format(profit_ratio * 100)
+            for trade_id in trade_ids:
+                if not isinstance(trade_id, int):
+                    log.error(
+                        "The trade_id(%s) defined under 'trade_ids' in %s is not an integer",
+                        trade_id, self.path
+                    )
+                    continue
+                if trade_id in open_trades:
+                    log.warning(
+                        "The trade %s is configured to HOLD until the profit ratio of %s is met",
+                        open_trades[trade_id],
+                        formatted_profit_ratio
+                    )
+                    rdata[trade_id] = profit_ratio
+                else:
+                    log.warning(
+                        "The trade_id(%s) is no longer open. Please remove it from 'trade_ids' in %s",
+                        trade_id,
+                        self.path
+                    )
+
+        return rdata

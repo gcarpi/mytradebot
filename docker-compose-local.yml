@@ -19,4 +19,4 @@ services:
       --config /freqtrade/user_data/config.json
       --config /freqtrade/user_data/kucoin-pairlist-volume-usdt.json
       --config /freqtrade/user_data/config-freqtrade_one.json
-      --strategy Mad
+      --strategy Infinity
