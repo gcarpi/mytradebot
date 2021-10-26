@@ -27,7 +27,10 @@
       "method": "VolumePairList",
       "number_assets": 75,
       "sort_key": "quoteVolume",
-      "refresh_period": 1800
+      "refresh_period": 86400,
+      "min_value": 0,
+      "lookback_timeframe": "1d",
+      "lookback_period": 7
     },
     { "method": "AgeFilter", "min_days_listed": 14 },
     { "method": "SpreadFilter", "max_spread_ratio": 0.005 },
@@ -44,16 +47,11 @@
     },
     {
       "method": "VolatilityFilter",
-      "lookback_days": 3,
+      "lookback_days": 5,
       "min_volatility": 0.02,
       "max_volatility": 0.75,
       "refresh_period": 43200
     },
-    {
-      "method": "VolumePairList",
-      "number_assets": 50,
-      "sort_key": "quoteVolume"
-    },
-    { "method": "PerformanceFilter" }
+    { "method": "ShuffleFilter" }
   ]
 }

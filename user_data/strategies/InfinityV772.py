@@ -124,7 +124,7 @@ class InfinityV772(IStrategy):
     has_downtime_protection = False
 
     # Do you want to use the hold feature? (with hold-trades.json)
-    holdSupportEnabled = True
+    holdSupportEnabled = False
 
     # Run "populate_indicators()" only for new candle.
     process_only_new_candles = True
