@@ -1,4 +1,27 @@
 {
+  "stake_currency": "USDT",
+
+  "exchange": {
+    "name": "kucoin",
+    "key": "",
+    "secret": "",
+    "password": "",
+    "pair_whitelist": [".*/USDT"],
+    "pair_blacklist": [
+      "KCS/.*",
+
+      ".*(3|3L|3S)/.*",
+
+      "(AUD|EUR|GBP|CHF|CAD|JPY)/.*",
+
+      "(BUSD|USDT|TUSD|USDC|CUSDT|DAI)/.*",
+
+      "(ACM|AFA|ALA|ALL|APL|ASR|ATM|BAR|CAI|CITY|FOR|GAL|GOZ|IBFK|JUV|LEG|LOCK-1|NAVI|NMR|NOV|OG|PFL|PSG|ROUSH|STV|TH|TRA|UCH|UFC|YBO)/.*",
+
+      "(CHZ|SHIB|SLP|XVS|MEM|AMPL|XYM|POLX|CARR|SKEY|MASK|KLV|TLOS)/.*"
+    ]
+  },
+
   "pairlists": [
     {
       "method": "VolumePairList",
