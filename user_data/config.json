@@ -96,7 +96,7 @@
 
   "initial_state": "running",
 
-  "forcebuy_enable": false,
+  "forcebuy_enable": true,
 
   "api_server": {
     "enabled": true,
