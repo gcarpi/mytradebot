@@ -100,10 +100,10 @@ class InfinityV772(IStrategy):
     stoploss = -0.99
 
     # Trailing stoploss (not used)
-    trailing_stop = False
+    trailing_stop = True
     trailing_only_offset_is_reached = True
     trailing_stop_positive = 0.01
-    trailing_stop_positive_offset = 0.03
+    trailing_stop_positive_offset = 0.04
 
     use_custom_stoploss = False
 
@@ -136,15 +136,6 @@ class InfinityV772(IStrategy):
 
     # Number of candles the strategy requires before producing valid signals
     startup_candle_count: int = 480
-
-    # Optional order type mapping.
-    order_types = {
-        'buy': 'limit',
-        'sell': 'limit',
-        'trailing_stop_loss': 'limit',
-        'stoploss': 'limit',
-        'stoploss_on_exchange': False
-    }
 
     #############################################################
 

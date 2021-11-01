@@ -74,15 +74,6 @@ class InfinitySMA(IStrategy):
     # Number of candles the strategy requires before producing valid signals
     startup_candle_count: int = 400
 
-    # Optional order type mapping.
-    order_types = {
-        'buy': 'limit',
-        'sell': 'limit',
-        'trailing_stop_loss': 'limit',
-        'stoploss': 'limit',
-        'stoploss_on_exchange': False
-    }
-
     #############################################################
 
     buy_params = {
