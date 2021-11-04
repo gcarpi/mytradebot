@@ -23,27 +23,27 @@ services:
     networks:
       - app-network
 
-  # freqtrade_two:
-  #   image: freqtrade:local
-  #   build:
-  #     context: .
-  #     dockerfile: "./Dockerfile.custom"
-  #   restart: unless-stopped
-  #   container_name: freqtrade_two
-  #   volumes:
-  #     - "./user_data:/freqtrade/user_data"
-  #   ports:
-  #     - "127.0.0.1:8081:8081"
-  #   command: >
-  #     trade
-  #     --logfile /freqtrade/user_data/logs/freqtrade_two.log
-  #     --db-url sqlite:////freqtrade/user_data/freqtrade_two.sqlite
-  #     --config /freqtrade/user_data/config.json
-  #     --config /freqtrade/user_data/kucoin-pairlist-volume-usdt.json
-  #     --config /freqtrade/user_data/config-freqtrade_two.json
-  #     --strategy InfinitySMA
-  #   networks:
-  #     - app-network
+  freqtrade_two:
+    image: freqtrade:local
+    build:
+      context: .
+      dockerfile: "./Dockerfile.custom"
+    restart: unless-stopped
+    container_name: freqtrade_two
+    volumes:
+      - "./user_data:/freqtrade/user_data"
+    ports:
+      - "127.0.0.1:8081:8081"
+    command: >
+      trade
+      --logfile /freqtrade/user_data/logs/freqtrade_two.log
+      --db-url sqlite:////freqtrade/user_data/freqtrade_two.sqlite
+      --config /freqtrade/user_data/config.json
+      --config /freqtrade/user_data/kucoin-pairlist-volume-usdt.json
+      --config /freqtrade/user_data/config-freqtrade_two.json
+      --strategy InfinityX
+    networks:
+      - app-network
 
   freqtrade_three:
     image: freqtrade:local
@@ -67,28 +67,6 @@ services:
     networks:
       - app-network
 
-  freqtrade_four:
-    image: freqtrade:local
-    build:
-      context: .
-      dockerfile: "./Dockerfile.custom"
-    restart: unless-stopped
-    container_name: freqtrade_four
-    volumes:
-      - "./user_data:/freqtrade/user_data"
-    ports:
-      - "127.0.0.1:8083:8083"
-    command: >
-      trade
-      --logfile /freqtrade/user_data/logs/freqtrade_four.log
-      --db-url sqlite:////freqtrade/user_data/freqtrade_four.sqlite
-      --config /freqtrade/user_data/config.json
-      --config /freqtrade/user_data/kucoin-pairlist-volume-usdt.json
-      --config /freqtrade/user_data/config-freqtrade_four.json
-      --strategy InfinityX
-    networks:
-      - app-network
-
   webserver:
     image: nginx:mainline-alpine
     container_name: webserver
@@ -100,9 +78,8 @@ services:
       - ./nginx-conf:/etc/nginx/conf.d
     depends_on:
       - freqtrade_one
-      # - freqtrade_two
+      - freqtrade_two
       - freqtrade_three
-      - freqtrade_four
     networks:
       - app-network
 
