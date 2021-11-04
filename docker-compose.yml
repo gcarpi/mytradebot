@@ -100,7 +100,7 @@ services:
       - ./nginx-conf:/etc/nginx/conf.d
     depends_on:
       - freqtrade_one
-      - freqtrade_two
+      # - freqtrade_two
       - freqtrade_three
       - freqtrade_four
     networks:
