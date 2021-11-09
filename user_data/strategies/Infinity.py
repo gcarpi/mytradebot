@@ -19,7 +19,7 @@ import pandas_ta as pta
 
 log = logging.getLogger(__name__)
 
-# InfinityV721
+# NostalgiaForInfinity 7.2.1
 ###########################################################################################################
 ##                NostalgiaForInfinityV8 by iterativ                                                     ##
 ##                                                                                                       ##
