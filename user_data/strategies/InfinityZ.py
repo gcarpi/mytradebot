@@ -109,7 +109,7 @@ class InfinityZ(IStrategy):
         "0": 10,
     }
 
-    stoploss = -0.50
+    stoploss = -0.30
 
     # Trailing stoploss (not used)
     trailing_stop = False
