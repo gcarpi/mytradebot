@@ -21,62 +21,6 @@
     "unit": "seconds"
   },
 
-  "order_types": {
-    "buy": "market",
-    "sell": "market",
-    "forcesell": "market",
-    "emergencysell": "market",
-    "trailing_stop_loss": "market",
-    "stoploss": "market",
-    "stoploss_on_exchange": false,
-    "stoploss_on_exchange_interval": 60
-  },
-
-  "bid_strategy": {
-    "price_side": "ask",
-    "ask_last_balance": 0.0,
-    "use_order_book": false,
-    "order_book_top": 1,
-    "check_depth_of_market": {
-      "enabled": false,
-      "bids_to_ask_delta": 1
-    }
-  },
-
-  "ask_strategy": {
-    "price_side": "bid",
-    "use_order_book": false,
-    "order_book_min": 1,
-    "order_book_max": 1
-  },
-
-  "exchange": {
-    "name": "binance",
-    "key": "",
-    "secret": "",
-    "ccxt_config": { "enableRateLimit": true },
-    "ccxt_async_config": {
-      "enableRateLimit": true,
-      "rateLimit": 300
-    },
-    "pair_whitelist": [],
-    "pair_blacklist": [
-      "(BNB)/.*",
-
-      "(BTC|ETH|ADA|COTI)/.*",
-
-      ".*(_PREMIUM|BEAR|BULL|DOWN|HALF|HEDGE|UP|[1235][SL])/.*",
-
-      "(AUD|BRZ|CAD|CHF|EUR|GBP|HKD|IDRT|JPY|NGN|RUB|SGD|TRY|UAH|USD|ZAR)/.*",
-
-      "(BUSD|CUSDT|DAI|PAXG|SUSD|TUSD|USDC|USDP|USDT|VAI)/.*",
-
-      "(ACM|AFA|ALA|ALL|APL|ASR|ATM|BAR|CAI|CITY|FOR|GAL|GOZ|IBFK|JUV|LEG|LOCK-1|NAVI|NMR|NOV|OG|PFL|PSG|ROUSH|STV|TH|TRA|UCH|UFC|YBO)/.*",
-
-      "(CHZ|CTXC|HBAR|SHIB|SLP|XVS|ONG|ARDR)/.*"
-    ]
-  },
-
   "edge": {
     "enabled": false,
     "process_throttle_secs": 3600,
