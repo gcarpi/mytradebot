@@ -39,9 +39,9 @@ services:
       --logfile /freqtrade/user_data/logs/freqtrade_two.log
       --db-url sqlite:////freqtrade/user_data/freqtrade_two.sqlite
       --config /freqtrade/user_data/config.json
-      --config /freqtrade/user_data/kucoin-pairlist-volume-usdt.json
+      --config /freqtrade/user_data/gateio-pairlist-volume-usdt.json
       --config /freqtrade/user_data/config-freqtrade_two.json
-      --strategy InfinityX
+      --strategy Infinity
     networks:
       - app-network
 

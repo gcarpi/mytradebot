@@ -1,0 +1,135 @@
+{
+  "stake_currency": "USDT",
+
+  "bid_strategy": {
+    "price_side": "ask",
+    "ask_last_balance": 0.0,
+    "use_order_book": false,
+    "order_book_top": 1,
+    "check_depth_of_market": {
+      "enabled": false,
+      "bids_to_ask_delta": 1
+    }
+  },
+
+  "order_types": {
+    "buy": "limit",
+    "sell": "limit",
+    "forcesell": "limit",
+    "forcebuy": "limit",
+    "stoploss": "limit",
+    "stoploss_on_exchange": false
+  },
+
+  "ask_strategy": {
+    "price_side": "bid",
+    "use_order_book": false,
+    "order_book_min": 1,
+    "order_book_max": 1
+  },
+
+  "exchange": {
+    "name": "gateio",
+    "key": "",
+    "secret": "",
+    "pair_whitelist": [
+      "RACA/USDT",
+      "ETH/USDT",
+      "LRC/USDT",
+      "BTC/USDT",
+      "SAITAMA/USDT",
+      "LTC/USDT",
+      "BNB/USDT",
+      "STARL/USDT",
+      "DOGE/USDT",
+      "AVAX/USDT",
+      "SHIB/USDT",
+      "TRX/USDT",
+      "MANA/USDT",
+      "XRP/USDT",
+      "ZKS/USDT",
+      "KISHU/USDT",
+      "KEEP/USDT",
+      "FIL/USDT",
+      "DOT/USDT",
+      "FLOKI/USDT",
+      "EOS/USDT",
+      "GT/USDT",
+      "POLC/USDT",
+      "LPT/USDT",
+      "GGG/USDT",
+      "LAT/USDT",
+      "IOTX/USDT",
+      "ENS/USDT",
+      "ADA/USDT",
+      "LINK/USDT",
+      "VRA/USDT",
+      "LUNA/USDT",
+      "SAND/USDT",
+      "NU/USDT",
+      "JASMY/USDT",
+      "GM/USDT",
+      "NFT/USDT",
+      "BLOK/USDT",
+      "SOL/USDT",
+      "ATLAS/USDT",
+      "QUACK/USDT",
+      "SKM/USDT",
+      "WEMIX/USDT",
+      "IMX/USDT",
+      "ETC/USDT",
+      "CSPR/USDT",
+      "ICP/USDT",
+      "WAXP/USDT",
+      "CERE/USDT",
+      "ELON/USDT",
+      "CRO/USDT",
+      "QRDO/USDT",
+      "FTM/USDT",
+      "SQUID/USDT",
+      "JULD/USDT",
+      "AKITA/USDT",
+      "QTUM/USDT",
+      "METIS/USDT",
+      "ZEC/USDT",
+      "HT/USDT",
+      "RMRK/USDT",
+      "CHZ/USDT",
+      "CRV/USDT",
+      "RNDR/USDT",
+      "BCH/USDT",
+      "UFO/USDT",
+      "ALGO/USDT",
+      "CHR/USDT",
+      "ATOM/USDT",
+      "BabyDoge/USDT",
+      "GALA/USDT",
+      "SXP/USDT",
+      "1INCH/USDT",
+      "WIN/USDT",
+      "XLM/USDT",
+      "EXRD/USDT",
+      "MBOX/USDT",
+      "GRT/USDT",
+      "LTO/USDT",
+      "MINA/USDT"
+    ],
+    "pair_blacklist": [
+      ".*(3|3L|3S|5|5L|5S|BEAR|BULL|_PREMIUM|BEAR|BULL|DOWN|HALF|HEDGE|UP|[1235][SL])/.*",
+
+      "(AUD|EUR|GBP|CHF|CAD|JPY|BRZ|HKD|IDRT|NGN|RUB|SGD|TRY|UAH|USD|ZAR)/.*",
+
+      "(BUSD|USDT|TUSD|USDC|CUSDT|DAI|USDN|CUSD|PAXG|SUSD|USDP|VAI)/.*",
+
+      "(ACM|AFA|ALA|ALL|APL|ASR|ATM|BAR|CAI|CITY|FOR|GAL|GOZ|IBFK|JUV|LEG|LOCK-1|NAVI|NMR|NOV|OG|PFL|PSG|ROUSH|STV|TH|TRA|UCH|UFC|YBO)/.*",
+
+      "(CHZ|SLP|XVS|MEM|AMPL|XYM|POLX|CARR|SKEY|MASK|KLV|TLOS|CIX100|DAPPT|MXW|LSS|ENJ|ANKR|SOLVE|BAT|HAKA|ZCX|DINO|ETHO|DOGE|COTI|IDEA|TEL)/.*"
+    ]
+  },
+
+  "pairlists": [
+    {
+      "method": "StaticPairList"
+    }
+  ]
+}
