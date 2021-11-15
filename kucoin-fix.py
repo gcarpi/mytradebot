@@ -1,7 +1,7 @@
 # docker ps -a
 # docker exec -u 0 -it [container] /bin/bash
 # apt-get update && apt-get install nano && nano freqtrade/exchange/common.py
-# docker-compose restart freqtrade_one && docker-compose restart freqtrade_two && docker-compose restart freqtrade_three && docker-compose logs -f
+# docker-compose restart freqtrade_one && docker-compose restart freqtrade_two && docker-compose restart freqtrade_three && docker-compose logs -f --tail="200"
 
 def retrier_async(f):
     async def wrapper(*args, **kwargs):
