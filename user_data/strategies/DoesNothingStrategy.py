@@ -6,11 +6,7 @@ from pandas import DataFrame
 
 class DoesNothingStrategy(IStrategy):
     """
-
-    author@: Gert Wohlgemuth
-
     just a skeleton
-
     """
 
     # Minimal ROI designed for the strategy.

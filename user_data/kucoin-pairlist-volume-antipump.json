@@ -1,6 +1,17 @@
 {
   "stake_currency": "USDT",
 
+  "order_types": {
+    "buy": "market",
+    "sell": "market",
+    "forcesell": "market",
+    "emergencysell": "market",
+    "trailing_stop_loss": "market",
+    "stoploss": "market",
+    "stoploss_on_exchange": false,
+    "stoploss_on_exchange_interval": 60
+  },
+
   "bid_strategy": {
     "price_side": "ask",
     "ask_last_balance": 0.0,
@@ -10,15 +21,6 @@
       "enabled": false,
       "bids_to_ask_delta": 1
     }
-  },
-
-  "order_types": {
-    "buy": "limit",
-    "sell": "limit",
-    "forcesell": "limit",
-    "forcebuy": "limit",
-    "stoploss": "limit",
-    "stoploss_on_exchange": false
   },
 
   "ask_strategy": {
@@ -52,12 +54,16 @@
   "pairlists": [
     {
       "method": "VolumePairList",
-      "number_assets": 80,
+      "number_assets": 120,
       "sort_key": "quoteVolume",
       "refresh_period": 1800
     },
     { "method": "AgeFilter", "min_days_listed": 14 },
     { "method": "SpreadFilter", "max_spread_ratio": 0.006 },
+    {
+      "method": "PriceFilter",
+      "min_price": 0.001
+    },
     {
       "method": "RangeStabilityFilter",
       "lookback_days": 3,
@@ -73,7 +79,7 @@
     },
     {
       "method": "VolumePairList",
-      "number_assets": 60,
+      "number_assets": 40,
       "sort_key": "quoteVolume",
       "refresh_period": 1800
     },

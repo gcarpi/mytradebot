@@ -71,13 +71,13 @@ class Infinity(IStrategy):
         "0": 10,
     }
 
-    stoploss = -0.30
+    stoploss = -0.25
 
     # Trailing stoploss (not used)
     trailing_stop = True
     trailing_only_offset_is_reached = True
-    trailing_stop_positive = 0.005
-    trailing_stop_positive_offset = 0.03
+    trailing_stop_positive = 0.0005
+    trailing_stop_positive_offset = 0.02
 
     use_custom_stoploss = False
 
