@@ -71,7 +71,7 @@ class Infinity(IStrategy):
         "0": 10,
     }
 
-    stoploss = -0.25
+    stoploss = -0.20
 
     # Trailing stoploss (not used)
     trailing_stop = True
@@ -2209,7 +2209,6 @@ class Infinity(IStrategy):
 
         return False, None
 
-
     def sell_under_min(self, current_profit: float, last_candle) -> tuple:
         if ((last_candle['moderi_96']) == False):
             # Downtrend
@@ -2944,9 +2943,9 @@ class Infinity(IStrategy):
         dataframe = self.normal_tf_indicators(dataframe, metadata)
         return dataframe
 
-
     def populate_buy_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         conditions = []
+        dataframe.loc[:, 'buy_tag'] = ''
         buy_protection_list = []
 
         # Protections [STANDARD] - Common to every condition
@@ -2987,7 +2986,9 @@ class Infinity(IStrategy):
             item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_1.value)
             item_buy_logic.append(dataframe['mfi'] < self.buy_mfi_1.value)
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            conditions.append(item_buy)
+            dataframe.loc[item_buy, 'buy_tag'] += '1 '
 
         # Buy Condition #2
         # -----------------------------------------------------------------------------------------
@@ -3001,7 +3002,9 @@ class Infinity(IStrategy):
             item_buy_logic.append(dataframe['mfi'] < self.buy_mfi_2.value)
             item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_bb_offset_2.value))
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            conditions.append(item_buy)
+            dataframe.loc[item_buy, 'buy_tag'] += '2 '
 
         # Buy Condition #3
         # -----------------------------------------------------------------------------------------
@@ -3019,7 +3022,9 @@ class Infinity(IStrategy):
             item_buy_logic.append(dataframe['close'].lt(dataframe['bb40_2_low'].shift()))
             item_buy_logic.append(dataframe['close'].le(dataframe['close'].shift()))
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            conditions.append(item_buy)
+            dataframe.loc[item_buy, 'buy_tag'] += '3 '
 
         # Buy Condition #4
         # -----------------------------------------------------------------------------------------
@@ -3032,7 +3037,9 @@ class Infinity(IStrategy):
             item_buy_logic.append(dataframe['close'] < dataframe['ema_50'])
             item_buy_logic.append(dataframe['close'] < self.buy_bb20_close_bblowerband_4.value * dataframe['bb20_2_low'])
             item_buy_logic.append(dataframe['volume'] < (dataframe['volume_mean_30'].shift(1) * self.buy_bb20_volume_4.value))
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            conditions.append(item_buy)
+            dataframe.loc[item_buy, 'buy_tag'] += '4 '
 
         # Buy Condition #5
         # -----------------------------------------------------------------------------------------
@@ -3048,7 +3055,9 @@ class Infinity(IStrategy):
             item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
             item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_bb_offset_5.value))
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            conditions.append(item_buy)
+            dataframe.loc[item_buy, 'buy_tag'] += '5 '
 
         # Buy Condition #6
         # -----------------------------------------------------------------------------------------
@@ -3063,7 +3072,9 @@ class Infinity(IStrategy):
             item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
             item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_bb_offset_6.value))
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            conditions.append(item_buy)
+            dataframe.loc[item_buy, 'buy_tag'] += '6 '
 
         # Buy Condition #7
         # -----------------------------------------------------------------------------------------
@@ -3078,7 +3089,9 @@ class Infinity(IStrategy):
             item_buy_logic.append((dataframe['ema_26'].shift() - dataframe['ema_12'].shift()) > (dataframe['open'] / 100))
             item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_7.value)
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            conditions.append(item_buy)
+            dataframe.loc[item_buy, 'buy_tag'] += '7 '
 
         # Buy Condition #8
         # -----------------------------------------------------------------------------------------
@@ -3093,7 +3106,9 @@ class Infinity(IStrategy):
             item_buy_logic.append(dataframe['close'] > dataframe['open'])
             item_buy_logic.append((dataframe['close'] - dataframe['low']) > ((dataframe['close'] - dataframe['open']) * self.buy_tail_diff_8.value))
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            conditions.append(item_buy)
+            dataframe.loc[item_buy, 'buy_tag'] += '8 '
 
         # Buy Condition #9
         # -----------------------------------------------------------------------------------------
@@ -3110,7 +3125,9 @@ class Infinity(IStrategy):
             item_buy_logic.append(dataframe['rsi_1h'] < self.buy_rsi_1h_max_9.value)
             item_buy_logic.append(dataframe['mfi'] < self.buy_mfi_9.value)
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            conditions.append(item_buy)
+            dataframe.loc[item_buy, 'buy_tag'] += '9 '
 
         # Buy Condition #10
         # -----------------------------------------------------------------------------------------
@@ -3125,7 +3142,9 @@ class Infinity(IStrategy):
             item_buy_logic.append(dataframe['close'] < dataframe['bb20_2_low'] * self.buy_bb_offset_10.value)
             item_buy_logic.append(dataframe['rsi_1h'] < self.buy_rsi_1h_10.value)
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            conditions.append(item_buy)
+            dataframe.loc[item_buy, 'buy_tag'] += '10 '
 
         # Buy Condition #11
         # -----------------------------------------------------------------------------------------
@@ -3145,7 +3164,9 @@ class Infinity(IStrategy):
             item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_11.value)
             item_buy_logic.append(dataframe['mfi'] < self.buy_mfi_11.value)
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            conditions.append(item_buy)
+            dataframe.loc[item_buy, 'buy_tag'] += '11 '
 
         # Buy Condition #12
         # -----------------------------------------------------------------------------------------
@@ -3159,7 +3180,9 @@ class Infinity(IStrategy):
             item_buy_logic.append(dataframe['ewo'] > self.buy_ewo_12.value)
             item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_12.value)
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            conditions.append(item_buy)
+            dataframe.loc[item_buy, 'buy_tag'] += '12 '
 
         # Buy Condition #13
         # -----------------------------------------------------------------------------------------
@@ -3174,7 +3197,9 @@ class Infinity(IStrategy):
             item_buy_logic.append(dataframe['close'] < dataframe['sma_30'] * self.buy_ma_offset_13.value)
             item_buy_logic.append(dataframe['ewo'] < self.buy_ewo_13.value)
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            conditions.append(item_buy)
+            dataframe.loc[item_buy, 'buy_tag'] += '13 '
 
         # Buy Condition #14
         # -----------------------------------------------------------------------------------------
@@ -3190,7 +3215,9 @@ class Infinity(IStrategy):
             item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_bb_offset_14.value))
             item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * self.buy_ma_offset_14.value)
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            conditions.append(item_buy)
+            dataframe.loc[item_buy, 'buy_tag'] += '14 '
 
         # Buy Condition #15
         # -----------------------------------------------------------------------------------------
@@ -3207,7 +3234,9 @@ class Infinity(IStrategy):
             item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_15.value)
             item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * self.buy_ma_offset_15.value)
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            conditions.append(item_buy)
+            dataframe.loc[item_buy, 'buy_tag'] += '15 '
 
         # Buy Condition #16
         # -----------------------------------------------------------------------------------------
@@ -3221,7 +3250,9 @@ class Infinity(IStrategy):
             item_buy_logic.append(dataframe['ewo'] > self.buy_ewo_16.value)
             item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_16.value)
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            conditions.append(item_buy)
+            dataframe.loc[item_buy, 'buy_tag'] += '16 '
 
         # Buy Condition #17
         # -----------------------------------------------------------------------------------------
@@ -3234,7 +3265,9 @@ class Infinity(IStrategy):
             item_buy_logic.append(dataframe['close'] < dataframe['ema_20'] * self.buy_ma_offset_17.value)
             item_buy_logic.append(dataframe['ewo'] < self.buy_ewo_17.value)
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            conditions.append(item_buy)
+            dataframe.loc[item_buy, 'buy_tag'] += '17 '
 
         # Buy Condition #18
         # -----------------------------------------------------------------------------------------
@@ -3250,7 +3283,9 @@ class Infinity(IStrategy):
             item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_18.value)
             item_buy_logic.append(dataframe['close'] < (dataframe['bb20_2_low'] * self.buy_bb_offset_18.value))
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            conditions.append(item_buy)
+            dataframe.loc[item_buy, 'buy_tag'] += '18 '
 
         # Buy Condition #19
         # -----------------------------------------------------------------------------------------
@@ -3268,7 +3303,9 @@ class Infinity(IStrategy):
             item_buy_logic.append(dataframe['chop'] < self.buy_chop_min_19.value)
             item_buy_logic.append(dataframe['moderi_64'] == True)
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            conditions.append(item_buy)
+            dataframe.loc[item_buy, 'buy_tag'] += '19 '
 
         # Buy Condition #20
         # -----------------------------------------------------------------------------------------
@@ -3281,7 +3318,9 @@ class Infinity(IStrategy):
             item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_20.value)
             item_buy_logic.append(dataframe['rsi_1h'] < self.buy_rsi_1h_20.value)
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            conditions.append(item_buy)
+            dataframe.loc[item_buy, 'buy_tag'] += '20 '
 
         # Buy Condition #21
         # -----------------------------------------------------------------------------------------
@@ -3295,7 +3334,9 @@ class Infinity(IStrategy):
             item_buy_logic.append(dataframe['rsi_1h'] < self.buy_rsi_1h_21.value)
             item_buy_logic.append(dataframe['cti'] < self.buy_cti_21.value)
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            conditions.append(item_buy)
+            dataframe.loc[item_buy, 'buy_tag'] += '21 '
 
         # Buy Condition #22
         # -----------------------------------------------------------------------------------------
@@ -3314,7 +3355,9 @@ class Infinity(IStrategy):
             item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_22.value)
             item_buy_logic.append(dataframe['safe_dump_20_1h'])
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            conditions.append(item_buy)
+            dataframe.loc[item_buy, 'buy_tag'] += '22 '
 
         # Buy Condition #23
         # -----------------------------------------------------------------------------------------
@@ -3329,7 +3372,9 @@ class Infinity(IStrategy):
             item_buy_logic.append(dataframe['rsi'] < self.buy_rsi_23.value)
             item_buy_logic.append(dataframe['rsi_1h'] < self.buy_rsi_1h_23.value)
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            conditions.append(item_buy)
+            dataframe.loc[item_buy, 'buy_tag'] += '23 '
 
         # Buy Condition #24
         # -----------------------------------------------------------------------------------------
@@ -3347,7 +3392,9 @@ class Infinity(IStrategy):
             item_buy_logic.append(dataframe['rsi'] < self.buy_24_rsi_max.value)
             item_buy_logic.append(dataframe['rsi_1h'] > self.buy_24_rsi_1h_min.value)
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            conditions.append(item_buy)
+            dataframe.loc[item_buy, 'buy_tag'] += '24 '
 
         # Buy Condition #25
         # -----------------------------------------------------------------------------------------
@@ -3366,7 +3413,9 @@ class Infinity(IStrategy):
                 (dataframe['open'] < dataframe['ema_20_1h']) & (dataframe['low'] < dataframe['ema_20_1h']) |
                 (dataframe['open'] > dataframe['ema_20_1h']) & (dataframe['low'] > dataframe['ema_20_1h'])
             )
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            conditions.append(item_buy)
+            dataframe.loc[item_buy, 'buy_tag'] += '25 '
 
         # Buy Condition #26
         # -----------------------------------------------------------------------------------------
@@ -3378,7 +3427,9 @@ class Infinity(IStrategy):
             item_buy_logic.append(reduce(lambda x, y: x & y, buy_protection_list[25]))
             item_buy_logic.append(dataframe['close'] < (dataframe['zema'] * self.buy_26_zema_low_offset.value))
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            conditions.append(item_buy)
+            dataframe.loc[item_buy, 'buy_tag'] += '26 '
 
         # Buy Condition #27
         # -----------------------------------------------------------------------------------------
@@ -3392,7 +3443,9 @@ class Infinity(IStrategy):
             item_buy_logic.append(dataframe['r_480_1h'] < -self.buy_27_wr_1h_max.value)
             item_buy_logic.append(dataframe['rsi_1h'] + dataframe['rsi'] < self.buy_27_rsi_max.value)
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            conditions.append(item_buy)
+            dataframe.loc[item_buy, 'buy_tag'] += '27 '
 
         # Buy Condition #28
         # -----------------------------------------------------------------------------------------
@@ -3408,7 +3461,9 @@ class Infinity(IStrategy):
             item_buy_logic.append(dataframe['rsi'] < 38.0)
             item_buy_logic.append(dataframe['cti'] < -0.6)
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            conditions.append(item_buy)
+            dataframe.loc[item_buy, 'buy_tag'] += '28 '
 
         # Buy Condition #29
         # -----------------------------------------------------------------------------------------
@@ -3421,7 +3476,9 @@ class Infinity(IStrategy):
             item_buy_logic.append(dataframe['close'] < dataframe['hull_75'] * 0.9)
             item_buy_logic.append(dataframe['ewo'] < -4.0)
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            conditions.append(item_buy)
+            dataframe.loc[item_buy, 'buy_tag'] += '29 '
 
         # Buy Condition #30
         # -----------------------------------------------------------------------------------------
@@ -3435,7 +3492,9 @@ class Infinity(IStrategy):
             item_buy_logic.append(dataframe['ewo'] > 9.0)
             item_buy_logic.append(dataframe['rsi'] < 42.0)
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            conditions.append(item_buy)
+            dataframe.loc[item_buy, 'buy_tag'] += '30 '
 
         # Buy Condition #31
         # -----------------------------------------------------------------------------------------
@@ -3449,7 +3508,9 @@ class Infinity(IStrategy):
             item_buy_logic.append(dataframe['ewo'] < -19.0)
             item_buy_logic.append(dataframe['r_480'] < -99.0)
             item_buy_logic.append(dataframe['volume'] > 0)
-            conditions.append(reduce(lambda x, y: x & y, item_buy_logic))
+            item_buy = reduce(lambda x, y: x & y, item_buy_logic)
+            conditions.append(item_buy)
+            dataframe.loc[item_buy, 'buy_tag'] += '31 '
 
         if conditions:
             dataframe.loc[
