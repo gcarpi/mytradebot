@@ -90,21 +90,6 @@ def chaikin_money_flow(dataframe, n=20, fillna=False) -> Series:
     return Series(cmf, name='cmf')
 
 class BB_RPB_TSL(IStrategy):
-    '''
-        BB_RPB_TSL
-        @author jilv220
-        Simple bollinger brand strategy inspired by this blog  ( https://hacks-for-life.blogspot.com/2020/12/freqtrade-notes.html )
-        RPB, which stands for Real Pull Back, taken from ( https://github.com/GeorgeMurAlkh/freqtrade-stuff/blob/main/user_data/strategies/TheRealPullbackV2.py )
-        The trailing custom stoploss taken from BigZ04_TSL from Perkmeister ( modded by ilya )
-        I modified it to better suit my taste and added Hyperopt for this strategy.
-    '''
-
-    # (1) sell rework
-
-    ##########################################################################
-
-    # Hyperopt result area
-
     # buy space
     buy_params = {
         "max_slip": 0.668,
