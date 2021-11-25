@@ -68,7 +68,7 @@ class Infinity(IStrategy):
 
     # # ROI table:
     minimal_roi = {
-        "0": 10,
+        "0": 99,
     }
 
     stoploss = -0.20
@@ -77,7 +77,7 @@ class Infinity(IStrategy):
     trailing_stop = True
     trailing_only_offset_is_reached = True
     trailing_stop_positive = 0.0005
-    trailing_stop_positive_offset = 0.02
+    trailing_stop_positive_offset = 0.05
 
     use_custom_stoploss = False
 
@@ -2116,12 +2116,12 @@ class Infinity(IStrategy):
             elif self.sell_custom_under_profit_3.value > current_profit > self.sell_custom_under_profit_2.value:
                 if last_candle['rsi'] < self.sell_custom_under_rsi_2.value:
                     return True, 'signal_profit_u_2'
-            elif self.sell_custom_under_profit_2.value > current_profit > self.sell_custom_under_profit_1.value:
-                if last_candle['rsi'] < self.sell_custom_under_rsi_1.value:
-                    return True, 'signal_profit_u_1'
-            elif self.sell_custom_under_profit_1.value > current_profit > self.sell_custom_under_profit_0.value:
-                if (last_candle['rsi'] < self.sell_custom_under_rsi_0.value) & (last_candle['cmf'] < 0.0):
-                    return True, 'signal_profit_u_0'
+            # elif self.sell_custom_under_profit_2.value > current_profit > self.sell_custom_under_profit_1.value:
+            #     if last_candle['rsi'] < self.sell_custom_under_rsi_1.value:
+            #         return True, 'signal_profit_u_1'
+            # elif self.sell_custom_under_profit_1.value > current_profit > self.sell_custom_under_profit_0.value:
+            #     if (last_candle['rsi'] < self.sell_custom_under_rsi_0.value) & (last_candle['cmf'] < 0.0):
+            #         return True, 'signal_profit_u_0'
 
         return False, None
 
