@@ -19,7 +19,7 @@ services:
       --config /freqtrade/user_data/config.json
       --config /freqtrade/user_data/kucoin-pairlist-volume-usdt.json
       --config /freqtrade/user_data/config-freqtrade_one.json
-      --strategy BB_RPB_TSL
+      --strategy Infinity
     networks:
       - app-network
 
@@ -63,7 +63,7 @@ services:
       --config /freqtrade/user_data/config.json
       --config /freqtrade/user_data/binance-pairlist-volume-busd.json
       --config /freqtrade/user_data/config-freqtrade_three.json
-      --strategy BB_RPB_TSL
+      --strategy InfinityBI
     networks:
       - app-network
 
