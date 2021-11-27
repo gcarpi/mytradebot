@@ -41,7 +41,7 @@ services:
       --config /freqtrade/user_data/config.json
       --config /freqtrade/user_data/gateio-pairlist-volume-usdt.json
       --config /freqtrade/user_data/config-freqtrade_two.json
-      --strategy BB_RPB_TSL
+      --strategy Infinity
     networks:
       - app-network
 
