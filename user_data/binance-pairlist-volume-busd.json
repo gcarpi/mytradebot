@@ -34,9 +34,7 @@
     "name": "binance",
     "key": "",
     "secret": "",
-    "pair_whitelist": [
-      ".*/BUSD"
-    ],
+    "pair_whitelist": [".*/BUSD"],
     "pair_blacklist": [
       "(BNB)/.*",
 
@@ -53,28 +51,20 @@
       "(CHZ|CTXC|HBAR|SHIB|SLP|XVS|ONG|ARDR)/.*"
     ]
   },
-  
+
   "pairlists": [
     {
       "method": "VolumePairList",
       "number_assets": 75,
       "sort_key": "quoteVolume",
-      "refresh_period": 88000,
-      "min_value": 0,
-      "lookback_timeframe": "1d",
-      "lookback_period": 7
+      "refresh_period": 1800
     },
-    { "method": "AgeFilter", "min_days_listed": 15 },
+    { "method": "AgeFilter", "min_days_listed": 2 },
     { "method": "SpreadFilter", "max_spread_ratio": 0.005 },
-    {
-      "method": "PriceFilter",
-      "min_price": 0.001
-    },
     {
       "method": "RangeStabilityFilter",
       "lookback_days": 3,
-      "min_rate_of_change": 0.1,
-      "max_rate_of_change": 1,
+      "min_rate_of_change": 0.05,
       "refresh_period": 1800
     },
     {
@@ -82,8 +72,8 @@
       "lookback_days": 3,
       "min_volatility": 0.02,
       "max_volatility": 0.75,
-      "refresh_period": 1800
+      "refresh_period": 43200
     },
-    {"method": "ShuffleFilter"}
+    { "method": "ShuffleFilter" }
   ]
 }

@@ -56,7 +56,7 @@
       "sort_key": "quoteVolume",
       "refresh_period": 1800
     },
-    { "method": "AgeFilter", "min_days_listed": 14 },
+    { "method": "AgeFilter", "min_days_listed": 2 },
     { "method": "SpreadFilter", "max_spread_ratio": 0.006 },
     {
       "method": "RangeStabilityFilter",
@@ -69,14 +69,8 @@
       "lookback_days": 3,
       "min_volatility": 0.02,
       "max_volatility": 0.75,
-      "refresh_period": 1800
+      "refresh_period": 43200
     },
-    {
-      "method": "VolumePairList",
-      "number_assets": 60,
-      "sort_key": "quoteVolume",
-      "refresh_period": 1800
-    },
-    {"method": "ShuffleFilter"}
+    { "method": "ShuffleFilter" }
   ]
 }
