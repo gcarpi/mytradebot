@@ -39,9 +39,9 @@ services:
       --logfile /freqtrade/user_data/logs/freqtrade_two.log
       --db-url sqlite:////freqtrade/user_data/freqtrade_two.sqlite
       --config /freqtrade/user_data/config.json
-      --config /freqtrade/user_data/gateio-pairlist-volume-usdt.json
+      --config /freqtrade/user_data/kucoin-pairlist-volume-usdt.json
       --config /freqtrade/user_data/config-freqtrade_two.json
-      --strategy Infinity
+      --strategy NostalgiaForInfinityX
     networks:
       - app-network
 
@@ -63,7 +63,7 @@ services:
       --config /freqtrade/user_data/config.json
       --config /freqtrade/user_data/binance-pairlist-volume-busd.json
       --config /freqtrade/user_data/config-freqtrade_three.json
-      --strategy InfinityBI
+      --strategy NostalgiaForInfinityX
     networks:
       - app-network
 
