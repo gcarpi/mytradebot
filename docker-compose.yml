@@ -190,7 +190,7 @@ services:
     volumes:
       - "./user_data:/freqtrade/user_data"
     ports:
-      - "127.0.0.1:8087:8080"
+      - "127.0.0.1:8088:8080"
     command: >
       trade
       --logfile /freqtrade/user_data/logs/gateio_3.log
