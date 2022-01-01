@@ -50,7 +50,7 @@
     "jwt_secret_key": "mysecretkey",
     "username": "username",
     "password": "password",
-    "CORS_origins": []
+    "CORS_origins": ["http://localhost:8080"]
   },
 
   "internals": {

@@ -34,11 +34,14 @@
     "name": "binance",
     "key": "",
     "secret": "",
+    "ccxt_config": { "enableRateLimit": true },
+    "ccxt_async_config": {
+      "enableRateLimit": true,
+      "rateLimit": 600
+    },
     "pair_whitelist": [".*/BUSD"],
     "pair_blacklist": [
       "(BNB)/.*",
-
-      "(BTC|ETH|ADA|COTI)/.*",
 
       ".*(_PREMIUM|BEAR|BULL|DOWN|HALF|HEDGE|UP|[1235][SL])/.*",
 
@@ -46,20 +49,18 @@
 
       "(BUSD|CUSDT|DAI|PAXG|SUSD|TUSD|USDC|USDP|USDT|VAI)/.*",
 
-      "(ACM|AFA|ALA|ALL|APL|ASR|ATM|BAR|CAI|CITY|FOR|GAL|GOZ|IBFK|JUV|LEG|LOCK-1|NAVI|NMR|NOV|OG|PFL|PSG|ROUSH|STV|TH|TRA|UCH|UFC|YBO|PORTO)/.*",
-
-      "(CHZ|CTXC|HBAR|SHIB|SLP|XVS|ONG|ARDR)/.*"
+      "(ACM|AFA|ALA|ALL|APL|ASR|ATM|BAR|CAI|CITY|FOR|GAL|GOZ|IBFK|JUV|LEG|LOCK-1|NAVI|NMR|NOV|OG|PFL|PSG|ROUSH|STV|TH|TRA|UCH|UFC|YBO|PORTO)/.*"
     ]
   },
 
   "pairlists": [
     {
       "method": "VolumePairList",
-      "number_assets": 75,
+      "number_assets": 70,
       "sort_key": "quoteVolume",
       "refresh_period": 1800
     },
-    { "method": "AgeFilter", "min_days_listed": 2 },
+    { "method": "AgeFilter", "min_days_listed": 30 },
     { "method": "SpreadFilter", "max_spread_ratio": 0.005 },
     {
       "method": "RangeStabilityFilter",
@@ -72,7 +73,7 @@
       "lookback_days": 3,
       "min_volatility": 0.02,
       "max_volatility": 0.75,
-      "refresh_period": 43200
+      "refresh_period": 1800
     },
     { "method": "ShuffleFilter" }
   ]

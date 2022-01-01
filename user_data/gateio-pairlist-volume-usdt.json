@@ -32,6 +32,11 @@
     "name": "gateio",
     "key": "",
     "secret": "",
+    "ccxt_config": { "enableRateLimit": true },
+    "ccxt_async_config": {
+      "enableRateLimit": true,
+      "rateLimit": 600
+    },
     "pair_whitelist": [".*/USDT"],
     "pair_blacklist": [
       ".*(3|3L|3S|5|5L|5S|BEAR|BULL|_PREMIUM|BEAR|BULL|DOWN|HALF|HEDGE|UP|[1235][SL])/.*",
@@ -49,16 +54,12 @@
   "pairlists": [
     {
       "method": "VolumePairList",
-      "number_assets": 80,
+      "number_assets": 70,
       "sort_key": "quoteVolume",
       "refresh_period": 1800
     },
-    { "method": "AgeFilter", "min_days_listed": 14 },
+    { "method": "AgeFilter", "min_days_listed": 30 },
     { "method": "SpreadFilter", "max_spread_ratio": 0.006 },
-    {
-      "method": "PriceFilter",
-      "min_price": 0.001
-    },
     {
       "method": "RangeStabilityFilter",
       "lookback_days": 3,
