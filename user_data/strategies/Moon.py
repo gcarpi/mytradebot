@@ -109,12 +109,7 @@ class MoonStrategy(IStrategy):
             return None
 
     def bot_loop_start(self, **kwargs) -> None:
-        if self.config['stake_amount'] != 'unlimited':
-            self.min_candle_vol = self.config['stake_amount']
-        elif self.config['available_capital'] > 0 and self.config['max_open_trades'] > 0:
-            self.min_candle_vol = self.config['available_capital'] // self.config['max_open_trades']
-        else:
-            self.min_candle_vol = 1000
+        self.min_candle_vol = 1000
         return None
 
     def confirm_trade_entry(self, pair: str, order_type: str, amount: float, rate: float,
