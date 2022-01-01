@@ -15,10 +15,12 @@
   "order_types": {
     "buy": "limit",
     "sell": "limit",
-    "forcesell": "limit",
+    "emergencysell": "limit",
     "forcebuy": "limit",
+    "forcesell": "limit",
     "stoploss": "limit",
-    "stoploss_on_exchange": false
+    "stoploss_on_exchange": false,
+    "stoploss_on_exchange_interval": 60
   },
 
   "ask_strategy": {
