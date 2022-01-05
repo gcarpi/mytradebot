@@ -20,7 +20,7 @@ services:
       --config /freqtrade/user_data/config.json
       --config /freqtrade/user_data/kucoin-pairlist-volume-usdt.json
       --config /freqtrade/user_data/config-kucoin_1.json
-      --strategy Elliot
+      --strategy Infinity
     networks:
       - app-network
 
@@ -87,7 +87,7 @@ services:
       --config /freqtrade/user_data/config.json
       --config /freqtrade/user_data/binance-pairlist-volume-busd.json
       --config /freqtrade/user_data/config-binance_1.json
-      --strategy Elliot
+      --strategy Infinity
     networks:
       - app-network
 
@@ -154,7 +154,7 @@ services:
       --config /freqtrade/user_data/config.json
       --config /freqtrade/user_data/gateio-pairlist-volume-usdt.json
       --config /freqtrade/user_data/config-gateio_1.json
-      --strategy Elliot
+      --strategy Infinity
     networks:
       - app-network
 
