@@ -109,7 +109,7 @@ class MoonStrategy(IStrategy):
             return None
 
     def bot_loop_start(self, **kwargs) -> None:
-        self.min_candle_vol = 1000
+        self.min_candle_vol = 100
         return None
 
     def confirm_trade_entry(self, pair: str, order_type: str, amount: float, rate: float,
