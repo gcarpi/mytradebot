@@ -6,12 +6,15 @@ import pandas_ta as pta
 from freqtrade.persistence import Trade
 from freqtrade.strategy.interface import IStrategy
 from pandas import DataFrame, Series
-from datetime import datetime
+from datetime import datetime, timedelta
 from freqtrade.strategy import merge_informative_pair, DecimalParameter, IntParameter, stoploss_from_open
 from functools import reduce
 
 # Lambo
 # --------------------------------
+def to_minutes(**timdelta_kwargs):
+    return int(timedelta(**timdelta_kwargs).total_seconds() / 60)
+
 def ha_typical_price(bars):
     res = (bars['ha_high'] + bars['ha_low'] + bars['ha_close']) / 3.
     return Series(index=bars.index, data=res)
@@ -313,6 +316,48 @@ class Lambo(IStrategy):
     pSL_2 = DecimalParameter(0.020, 0.070, default=0.040, decimals=3, space='sell', load=True, optimize=True)
 
     ############################################################################
+
+    @property
+    def protections(self):
+        return [
+            {
+                # Don't enter a trade right after selling a trade.
+                "method": "CooldownPeriod",
+                "stop_duration": to_minutes(minutes=0),
+            },
+            {
+                # Stop trading if max-drawdown is reached.
+                "method": "MaxDrawdown",
+                "lookback_period": to_minutes(hours=12),
+                "trade_limit": 20,  # Considering all pairs that have a minimum of 20 trades
+                "stop_duration": to_minutes(hours=1),
+                "max_allowed_drawdown": 0.2,  # If max-drawdown is > 20% this will activate
+            },
+            {
+                # Stop trading if a certain amount of stoploss occurred within a certain time window.
+                "method": "StoplossGuard",
+                "lookback_period": to_minutes(hours=6),
+                "trade_limit": 4,  # Considering all pairs that have a minimum of 4 trades
+                "stop_duration": to_minutes(minutes=30),
+                "only_per_pair": False,  # Looks at all pairs
+            },
+            {
+                # Lock pairs with low profits
+                "method": "LowProfitPairs",
+                "lookback_period": to_minutes(hours=1, minutes=30),
+                "trade_limit": 2,  # Considering all pairs that have a minimum of 2 trades
+                "stop_duration": to_minutes(hours=15),
+                "required_profit": 0.02,  # If profit < 2% this will activate for a pair
+            },
+            {
+                # Lock pairs with low profits
+                "method": "LowProfitPairs",
+                "lookback_period": to_minutes(hours=6),
+                "trade_limit": 4,  # Considering all pairs that have a minimum of 4 trades
+                "stop_duration": to_minutes(minutes=30),
+                "required_profit": 0.01,  # If profit < 1% this will activate for a pair
+            },
+        ]
 
     def informative_pairs(self):
 

@@ -1975,6 +1975,48 @@ class Infinity(IStrategy):
 
     hold_trade_ids = hold_trade_ids_profit_ratio = None
 
+    @property
+    def protections(self):
+        return [
+            {
+                # Don't enter a trade right after selling a trade.
+                "method": "CooldownPeriod",
+                "stop_duration": to_minutes(minutes=0),
+            },
+            {
+                # Stop trading if max-drawdown is reached.
+                "method": "MaxDrawdown",
+                "lookback_period": to_minutes(hours=12),
+                "trade_limit": 20,  # Considering all pairs that have a minimum of 20 trades
+                "stop_duration": to_minutes(hours=1),
+                "max_allowed_drawdown": 0.2,  # If max-drawdown is > 20% this will activate
+            },
+            {
+                # Stop trading if a certain amount of stoploss occurred within a certain time window.
+                "method": "StoplossGuard",
+                "lookback_period": to_minutes(hours=6),
+                "trade_limit": 4,  # Considering all pairs that have a minimum of 4 trades
+                "stop_duration": to_minutes(minutes=30),
+                "only_per_pair": False,  # Looks at all pairs
+            },
+            {
+                # Lock pairs with low profits
+                "method": "LowProfitPairs",
+                "lookback_period": to_minutes(hours=1, minutes=30),
+                "trade_limit": 2,  # Considering all pairs that have a minimum of 2 trades
+                "stop_duration": to_minutes(hours=15),
+                "required_profit": 0.02,  # If profit < 2% this will activate for a pair
+            },
+            {
+                # Lock pairs with low profits
+                "method": "LowProfitPairs",
+                "lookback_period": to_minutes(hours=6),
+                "trade_limit": 4,  # Considering all pairs that have a minimum of 4 trades
+                "stop_duration": to_minutes(minutes=30),
+                "required_profit": 0.01,  # If profit < 1% this will activate for a pair
+            },
+        ]
+
     def load_hold_trades_config(self):
         if self.hold_trade_ids is not None and self.hold_trade_ids_profit_ratio is not None:
             # Already loaded
@@ -3563,6 +3605,9 @@ class Infinity(IStrategy):
         # This pair is on the list to hold, and we haven't reached minimum profit, hold
         return False
 
+# To minutes
+def to_minutes(**timdelta_kwargs):
+    return int(timedelta(**timdelta_kwargs).total_seconds() / 60)
 
 # Elliot Wave Oscillator
 def ewo(dataframe, sma1_length=5, sma2_length=35):
