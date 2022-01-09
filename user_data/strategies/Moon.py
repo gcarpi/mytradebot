@@ -20,7 +20,7 @@ class MoonStrategy(IStrategy):
     def version(self) -> str:
         return 'v1.1.1'
 
-    min_candle_vol: int = 0
+    min_candle_vol = 1000
     custom_buy_info = {}
     max_concurrent_buy_signals_check = True
 
@@ -38,7 +38,7 @@ class MoonStrategy(IStrategy):
     use_sell_signal = True
     sell_profit_only = False
 
-    startup_candle_count: int = 200
+    startup_candle_count: int = 150
 
     @property
     def protections(self):
@@ -144,10 +144,6 @@ class MoonStrategy(IStrategy):
     def custom_sell(self, pair: str, trade: 'Trade', current_time: 'datetime', current_rate: float, current_profit: float, **kwargs):
             return None
 
-    def bot_loop_start(self, **kwargs) -> None:
-        self.min_candle_vol = 100
-        return None
-
     def confirm_trade_entry(self, pair: str, order_type: str, amount: float, rate: float,
                             time_in_force: str, current_time: datetime, **kwargs) -> bool:
         df, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
@@ -194,7 +190,7 @@ def vws(df: DataFrame, length: int) -> Series:
     return 100 * (mfp / (mfp + mfn))
 
 class MoonBuy(MoonStrategy):
-    buy_lookback_range = range(29, 74)
+    buy_lookback_range = range(30, 74)
     def populate_indicators_buy(self, df: DataFrame, metadata: dict) -> DataFrame:
         for i in self.buy_lookback_range:
             df[f"pctchange_{i}"] = df['close'].pct_change(periods=i)
@@ -225,7 +221,7 @@ class MoonBuy(MoonStrategy):
         tag_begin = df['buy_tag'].str[:3]
         tag_end = df['buy_tag'].str[-3:-1]
         tag_begin_end = tag_begin + tag_end
-        df.loc[:, 'buy'] = df['buy_tag'].ne('') & tag_begin_end.ne('29 73') # & tag_begin_end.ne('30 30') & tag_begin_end.ne('31 31') & tag_begin_end.ne('32 32') & ~to_numeric(tag_end).between(62, 69)
+        df.loc[:, 'buy'] = df['buy_tag'].ne('') & tag_begin_end.ne('30 74')
         df.loc[df['buy'], 'buy_tag'] = 'pct ' + tag_begin_end
         self.fill_custom_buy_info(df, metadata)
         return df
