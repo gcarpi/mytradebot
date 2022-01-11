@@ -250,11 +250,6 @@ class Lambo(IStrategy):
     buy_vwap_closedelta_2 = DecimalParameter(10.0, 30.0, default=15.0, optimize = is_optimize_vwap_2)
     buy_vwap_cti_2 = DecimalParameter(-0.9, -0.0, default=-0.6 , optimize = is_optimize_vwap_2)
 
-    is_optimize_vwap_3 = False
-    buy_vwap_width_3 = DecimalParameter(0.05, 10.0, default=0.80 , optimize = is_optimize_vwap_3)
-    buy_vwap_closedelta_3 = DecimalParameter(10.0, 30.0, default=15.0, optimize = is_optimize_vwap_3)
-    buy_vwap_cti_3 = DecimalParameter(-0.9, -0.0, default=-0.6 , optimize = is_optimize_vwap_3)
-
     is_optimize_vwap_4 = True
     buy_vwap_width_4 = DecimalParameter(0.05, 10.0, default=0.80 , optimize = is_optimize_vwap_4)
     buy_vwap_closedelta_4 = DecimalParameter(10.0, 30.0, default=15.0, optimize = is_optimize_vwap_4)
@@ -563,12 +558,6 @@ class Lambo(IStrategy):
                 (dataframe['close'].rolling(48).max() >= (dataframe['close'] * self.buy_pump_2_factor.value ))
             )
 
-        is_crash_4 = (
-                (dataframe['tpct_0'] < self.buy_crash_4_tpct_0.value) &
-                (dataframe['tpct_3'] < self.buy_crash_4_tpct_3.value) &
-                (dataframe['tpct_9'] < self.buy_crash_4_tpct_9.value)
-            )
-
         is_cofi = (
                 (dataframe['open'] < dataframe['ema_8'] * self.buy_ema_cofi.value) &
                 (qtpylib.crossed_above(dataframe['fastk'], dataframe['fastd'])) &
@@ -576,32 +565,6 @@ class Lambo(IStrategy):
                 (dataframe['fastd'] < self.buy_fastd.value) &
                 (dataframe['adx'] > self.buy_adx.value) &
                 (dataframe['EWO'] > self.buy_ewo_high.value)
-            )
-
-        is_gumbo = (                                                                        # Modified from gumbo1, creadit goes to original author @raph92
-                (dataframe['bb_middleband2_1h'] >= dataframe['T3_1h']) &
-                (dataframe['T3'] <= dataframe['ema_8'] * self.buy_gumbo_ema.value) &
-                (dataframe['cti'] < self.buy_gumbo_cti.value) &
-                (dataframe['r_14'] < self.buy_gumbo_r14.value) &
-                (dataframe['EWO'] < self.buy_gumbo_ewo_low.value) &
-
-                # Crash Protection
-                (dataframe['tpct_0'] < self.buy_gumbo_tpct_0.value) &
-                (dataframe['tpct_3'] < self.buy_gumbo_tpct_3.value) &
-                (dataframe['tpct_9'] < self.buy_gumbo_tpct_9.value)
-            )
-
-        is_clucHA = (
-                (dataframe['rocr_1h'] > self.buy_clucha_rocr_1h.value ) &
-                (
-                        (dataframe['bb_lowerband2_40'].shift() > 0) &
-                        (dataframe['bb_delta_cluc'] > dataframe['ha_close'] * self.buy_clucha_bbdelta_close.value) &
-                        (dataframe['ha_closedelta'] > dataframe['ha_close'] * self.buy_clucha_closedelta_close.value) &
-                        (dataframe['tail'] < dataframe['bb_delta_cluc'] * self.buy_clucha_bbdelta_tail.value) &
-                        (dataframe['ha_close'] < dataframe['bb_lowerband2_40'].shift()) &
-                        (dataframe['ha_close'] < dataframe['ha_close'].shift())
-                ) &
-                (dataframe['EWO'] > 8)
             )
 
         is_clucHA_2 = (
@@ -617,20 +580,6 @@ class Lambo(IStrategy):
                 (dataframe['EWO'] > 4) &
                 (dataframe['EWO'] < 8) &
                 (is_pump_2)
-            )
-
-        is_clucHA_3 = (
-                (dataframe['rocr_1h'] > self.buy_clucha_rocr_1h_3.value ) &
-                (
-                        (dataframe['bb_lowerband2_40'].shift() > 0) &
-                        (dataframe['bb_delta_cluc'] > dataframe['ha_close'] * self.buy_clucha_bbdelta_close_3.value) &
-                        (dataframe['ha_closedelta'] > dataframe['ha_close'] * self.buy_clucha_closedelta_close_3.value) &
-                        (dataframe['tail'] < dataframe['bb_delta_cluc'] * self.buy_clucha_bbdelta_tail_3.value) &
-                        (dataframe['ha_close'] < dataframe['bb_lowerband2_40'].shift()) &
-                        (dataframe['ha_close'] < dataframe['ha_close'].shift())
-                ) &
-                (dataframe['EWO'] < 4) &
-                (dataframe['EWO'] > -2.5)
             )
 
         is_clucHA_4 = (
@@ -649,14 +598,6 @@ class Lambo(IStrategy):
                 #(is_crash_4)
             )
 
-        is_vwap = (
-                (dataframe['close'] < dataframe['vwap_lowerband']) &
-                (dataframe['vwap_width'] > self.buy_vwap_width.value) &
-                (dataframe['closedelta'] > dataframe['close'] * self.buy_vwap_closedelta.value / 1000 ) &
-                (dataframe['cti'] < self.buy_vwap_cti.value) &
-                (dataframe['EWO'] > 8)
-            )
-
         is_vwap_2 = (
                 (dataframe['close'] < dataframe['vwap_lowerband']) &
                 (dataframe['vwap_width'] > self.buy_vwap_width_2.value) &
@@ -665,15 +606,6 @@ class Lambo(IStrategy):
                 (dataframe['EWO'] > 4) &
                 (dataframe['EWO'] < 8) &
                 (is_pump_2)
-            )
-
-        is_vwap_3 = (
-                (dataframe['close'] < dataframe['vwap_lowerband']) &
-                (dataframe['vwap_width'] > self.buy_vwap_width_3.value) &
-                (dataframe['closedelta'] > dataframe['close'] * self.buy_vwap_closedelta_3.value / 1000 ) &
-                (dataframe['cti'] < self.buy_vwap_cti_3.value) &
-                (dataframe['EWO'] < 4) &
-                (dataframe['EWO'] > -2.5)
             )
 
         is_vwap_4 = (
@@ -736,10 +668,6 @@ class Lambo(IStrategy):
         conditions.append(is_cofi)                                                   # ~3.21 90.8%
         dataframe.loc[is_cofi, 'buy_tag'] += 'cofi '
 
-        # EWO > 8
-        conditions.append(is_vwap)                                                   # ~67.3%
-        dataframe.loc[is_vwap, 'buy_tag'] += 'vwap '
-
         conditions.append(is_V)                                                      # ~67.9%
         dataframe.loc[is_V, 'buy_tag'] += 'V '
 
@@ -756,23 +684,12 @@ class Lambo(IStrategy):
         conditions.append(is_V_2)                                                    # ~67.9%
         dataframe.loc[is_V_2, 'buy_tag'] += 'V_2 '
 
-        # EWO -2.5 ~ 4
-        conditions.append(is_clucHA_3)                                               # ~68.2%
-        dataframe.loc[is_clucHA_3, 'buy_tag'] += 'cluc_3 '
-
-        conditions.append(is_vwap_3)                                                 # ~67.3%
-        dataframe.loc[is_vwap_3, 'buy_tag'] += 'vwap_3 '
-
         # EWO -8 ~ -4
         conditions.append(is_clucHA_4)                                               # ~68.2%
         dataframe.loc[is_clucHA_4, 'buy_tag'] += 'cluc_4 '
 
         conditions.append(is_vwap_4)                                                 # ~67.3%
         dataframe.loc[is_vwap_4, 'buy_tag'] += 'vwap_4 '
-
-        ## EWO < -8
-        conditions.append(is_gumbo)                                                  # ~2.63 / 90.6% / 41.49%      F   (263 %)
-        dataframe.loc[is_gumbo, 'buy_tag'] += 'gumbo '
 
         conditions.append(is_V_5)                                                    # ~67.9%
         dataframe.loc[is_V_5, 'buy_tag'] += 'V_5 '
