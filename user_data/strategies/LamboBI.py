@@ -63,7 +63,7 @@ def williams_r(dataframe: DataFrame, period: int = 14) -> Series:
 
     return WR * -100
 
-class Lambo(IStrategy):
+class LamboBI(IStrategy):
 
     # buy space
     buy_params = {
@@ -572,7 +572,7 @@ class Lambo(IStrategy):
                 (dataframe['EWO'] < 8) &
                 (is_pump_2)
             )
-        
+
         is_clucHA_3 = (
                 (dataframe['rocr_1h'] > self.buy_clucha_rocr_1h_3.value ) &
                 (
@@ -586,6 +586,22 @@ class Lambo(IStrategy):
                 (dataframe['EWO'] < 4) &
                 (dataframe['EWO'] > -2.5)
         )
+
+        is_clucHA_4 = (
+                (dataframe['rocr_1h'] > self.buy_clucha_rocr_1h_4.value ) &
+                (
+                        (dataframe['bb_lowerband2_40'].shift() > 0) &
+                        (dataframe['bb_delta_cluc'] > dataframe['ha_close'] * self.buy_clucha_bbdelta_close_4.value) &
+                        (dataframe['ha_closedelta'] > dataframe['ha_close'] * self.buy_clucha_closedelta_close_4.value) &
+                        (dataframe['tail'] < dataframe['bb_delta_cluc'] * self.buy_clucha_bbdelta_tail_4.value) &
+                        (dataframe['ha_close'] < dataframe['bb_lowerband2_40'].shift()) &
+                        (dataframe['ha_close'] < dataframe['ha_close'].shift())
+                ) &
+                (dataframe['EWO'] < -4) &
+                (dataframe['EWO'] > -8)
+                #&
+                #(is_crash_4)
+            )
 
         is_vwap_2 = (
                 (dataframe['close'] < dataframe['vwap_lowerband']) &
@@ -617,11 +633,43 @@ class Lambo(IStrategy):
                 (is_pump_2)
             )
 
+        is_V = (
+                (dataframe['bb_width'] > self.buy_V_bb_width.value) &
+                (dataframe['cti'] < self.buy_V_cti.value) &
+                (dataframe['r_14'] < self.buy_V_r14.value) &
+                (dataframe['mfi'] < self.buy_V_mfi.value) &
+                (dataframe['EWO'] > 8)
+            )
+
+        is_V_2 = (
+                (dataframe['bb_width'] > self.buy_V_bb_width_2.value) &
+                (dataframe['cti'] < self.buy_V_cti_2.value) &
+                (dataframe['r_14'] < self.buy_V_r14_2.value) &
+                (dataframe['mfi'] < self.buy_V_mfi_2.value) &
+                (dataframe['EWO'] > 4) &
+                (dataframe['EWO'] < 8) &
+                (is_pump_2)
+            )
+
+        is_V_5 = (
+                (dataframe['bb_width'] > self.buy_V_bb_width_5.value) &
+                (dataframe['cti'] < self.buy_V_cti_5.value) &
+                (dataframe['r_14'] < self.buy_V_r14_5.value) &
+                (dataframe['mfi'] < self.buy_V_mfi_5.value) &
+                # Really Bear, don't engage until dump over
+                (dataframe['ema_vwap_diff_50'] > 0.215) &
+                (dataframe['EWO'] < -10)
+            )
+
         is_additional_check = (
                 (dataframe['rsi_84'] < 60) &
                 (dataframe['rsi_112'] < 60) &
                 (dataframe['volume'] > 0)
             )
+
+        # condition append
+        conditions.append(is_V)                                                      # ~67.9%
+        dataframe.loc[is_V, 'buy_tag'] += 'V '
 
         # EWO 4 ~ 8
         conditions.append(is_lambo_2)                                                # ~67.7%
@@ -636,8 +684,18 @@ class Lambo(IStrategy):
         conditions.append(is_vwap_2)                                                 # ~67.3%
         dataframe.loc[is_vwap_2, 'buy_tag'] += 'vwap_2 '
 
+        conditions.append(is_V_2)                                                    # ~67.9%
+        dataframe.loc[is_V_2, 'buy_tag'] += 'V_2 '
+
+        # EWO -8 ~ -4
+        conditions.append(is_clucHA_4)                                               # ~68.2%
+        dataframe.loc[is_clucHA_4, 'buy_tag'] += 'cluc_4 '
+
         conditions.append(is_vwap_4)                                                 # ~67.3%
         dataframe.loc[is_vwap_4, 'buy_tag'] += 'vwap_4 '
+
+        conditions.append(is_V_5)                                                    # ~67.9%
+        dataframe.loc[is_V_5, 'buy_tag'] += 'V_5 '
 
         if conditions:
             dataframe.loc[
