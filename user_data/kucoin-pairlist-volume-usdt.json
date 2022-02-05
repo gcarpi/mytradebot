@@ -35,10 +35,19 @@
     "key": "",
     "secret": "",
     "password": "",
-    "ccxt_config": { "enableRateLimit": true },
+    "ccxt_config": {
+      "enableRateLimit": false,
+      "timeout": 60000,
+      "urls": {
+        "api": {
+          "public": "http://exchange-proxy:8080/kucoin",
+          "private": "http://exchange-proxy:8080/kucoin"
+        }
+      }
+    },
     "ccxt_async_config": {
-      "enableRateLimit": true,
-      "rateLimit": 600
+      "enableRateLimit": false,
+      "rateLimit": 60000
     },
     "pair_whitelist": [".*/USDT"],
     "pair_blacklist": [

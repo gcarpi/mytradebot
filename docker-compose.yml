@@ -42,7 +42,7 @@ services:
       --config /freqtrade/user_data/config.json
       --config /freqtrade/user_data/kucoin-pairlist-volume-usdt.json
       --config /freqtrade/user_data/config-kucoin_2.json
-      --strategy Lambo
+      --strategy NostalgiaForInfinityX
     networks:
       - app-network
 
@@ -109,7 +109,7 @@ services:
       --config /freqtrade/user_data/config.json
       --config /freqtrade/user_data/binance-pairlist-volume-busd.json
       --config /freqtrade/user_data/config-binance_2.json
-      --strategy LamboBI
+      --strategy NostalgiaForInfinityXBI
     networks:
       - app-network
 
@@ -176,7 +176,7 @@ services:
       --config /freqtrade/user_data/config.json
       --config /freqtrade/user_data/gateio-pairlist-volume-usdt.json
       --config /freqtrade/user_data/config-gateio_2.json
-      --strategy Lambo
+      --strategy NostalgiaForInfinityX
     networks:
       - app-network
 
@@ -201,7 +201,13 @@ services:
       --strategy Moon
     networks:
       - app-network
-      
+
+  exchange-proxy:
+    image: mikekonan/exchange-proxy:latest-arm64
+    restart: unless-stopped
+    command: -verbose 1
+    container_name: exchange-proxy  
+  
 networks:
   app-network:
     driver: bridge

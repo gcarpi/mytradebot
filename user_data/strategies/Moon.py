@@ -26,9 +26,12 @@ class MoonStrategy(IStrategy):
 
     minimal_roi = {"0": 100}
 
-    stoploss = -0.25
+    stoploss = -0.20
     stoploss_on_exchange = False
-    trailing_stop = False
+    trailing_stop = True
+    trailing_only_offset_is_reached = True
+    trailing_stop_positive = 0.0005
+    trailing_stop_positive_offset = 0.015
     use_custom_stoploss = False
 
     timeframe = '5m'

@@ -18,5 +18,4 @@ services:
       --db-url sqlite:////freqtrade/user_data/freqtrade_one.sqlite
       --config /freqtrade/user_data/config.json
       --config /freqtrade/user_data/kucoin-pairlist-volume-usdt.json
-      --config /freqtrade/user_data/config-private.json
       --strategy Infinity
