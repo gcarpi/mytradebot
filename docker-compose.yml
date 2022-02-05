@@ -201,13 +201,15 @@ services:
       --strategy Moon
     networks:
       - app-network
-
+  
   exchange-proxy:
     image: mikekonan/exchange-proxy:latest-arm64
     restart: unless-stopped
+    container_name: exchange-proxy
     command: -verbose 1
-    container_name: exchange-proxy  
-  
+    networks:
+      - app-network
+
 networks:
   app-network:
     driver: bridge
