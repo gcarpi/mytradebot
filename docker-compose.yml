@@ -109,7 +109,7 @@ services:
       --config /freqtrade/user_data/config.json
       --config /freqtrade/user_data/binance-pairlist-volume-busd.json
       --config /freqtrade/user_data/config-binance_2.json
-      --strategy NostalgiaForInfinityXBI
+      --strategy NostalgiaForInfinityX
     networks:
       - app-network
 
