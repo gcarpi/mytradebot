@@ -71,7 +71,7 @@ class Infinity(IStrategy):
         "0": 99,
     }
 
-    stoploss = -0.30
+    stoploss = -0.20
 
     # Trailing stoploss (not used)
     trailing_stop = True
@@ -105,26 +105,26 @@ class Infinity(IStrategy):
     buy_params = {
         #############
         # Enable/Disable conditions
-        "buy_condition_1_enable": True,
+        "buy_condition_1_enable": False,
         "buy_condition_2_enable": False,
         "buy_condition_3_enable": False,
-        "buy_condition_4_enable": True,
-        "buy_condition_5_enable": True,
+        "buy_condition_4_enable": False,
+        "buy_condition_5_enable": False,
         "buy_condition_6_enable": False,
         "buy_condition_7_enable": False,
-        "buy_condition_8_enable": True,
-        "buy_condition_9_enable": True,
+        "buy_condition_8_enable": False,
+        "buy_condition_9_enable": False,
         "buy_condition_10_enable": True,
         "buy_condition_11_enable": False,
         "buy_condition_12_enable": True,
         "buy_condition_13_enable": True,
         "buy_condition_14_enable": False,
         "buy_condition_15_enable": False,
-        "buy_condition_16_enable": True,
+        "buy_condition_16_enable": False,
         "buy_condition_17_enable": False,
         "buy_condition_18_enable": True,
-        "buy_condition_19_enable": True,
-        "buy_condition_20_enable": True,
+        "buy_condition_19_enable": False,
+        "buy_condition_20_enable": False,
         "buy_condition_21_enable": False,
         "buy_condition_22_enable": False,
         "buy_condition_23_enable": True,
@@ -132,9 +132,9 @@ class Infinity(IStrategy):
         "buy_condition_25_enable": False,
         "buy_condition_26_enable": True,
         "buy_condition_27_enable": False,
-        "buy_condition_28_enable": True,
+        "buy_condition_28_enable": False,
         "buy_condition_29_enable": False,
-        "buy_condition_30_enable": True,
+        "buy_condition_30_enable": False,
         "buy_condition_31_enable": False,
         #############
     }

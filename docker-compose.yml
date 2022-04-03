@@ -64,7 +64,7 @@ services:
       --config /freqtrade/user_data/config.json
       --config /freqtrade/user_data/kucoin-pairlist-volume-usdt.json
       --config /freqtrade/user_data/config-kucoin_3.json
-      --strategy Moon
+      --strategy NASOS
     networks:
       - app-network
 
@@ -131,7 +131,7 @@ services:
       --config /freqtrade/user_data/config.json
       --config /freqtrade/user_data/binance-pairlist-volume-busd.json
       --config /freqtrade/user_data/config-binance_3.json
-      --strategy Moon
+      --strategy NASOS
     networks:
       - app-network
 
@@ -198,7 +198,7 @@ services:
       --config /freqtrade/user_data/config.json
       --config /freqtrade/user_data/gateio-pairlist-volume-usdt.json
       --config /freqtrade/user_data/config-gateio_3.json
-      --strategy Moon
+      --strategy NASOS
     networks:
       - app-network
   
