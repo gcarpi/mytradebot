@@ -85,7 +85,7 @@ services:
       --logfile /freqtrade/user_data/logs/binance_1.log
       --db-url sqlite:////freqtrade/user_data/binance_1.sqlite
       --config /freqtrade/user_data/config.json
-      --config /freqtrade/user_data/binance-pairlist-volume-busd.json
+      --config /freqtrade/user_data/binance-pairlist-volume-usdt.json
       --config /freqtrade/user_data/config-binance_1.json
       --strategy Infinity
     networks:
@@ -129,7 +129,7 @@ services:
       --logfile /freqtrade/user_data/logs/binance_3.log
       --db-url sqlite:////freqtrade/user_data/binance_3.sqlite
       --config /freqtrade/user_data/config.json
-      --config /freqtrade/user_data/binance-pairlist-volume-busd.json
+      --config /freqtrade/user_data/binance-pairlist-volume-usdt.json
       --config /freqtrade/user_data/config-binance_3.json
       --strategy NASOS
     networks:
