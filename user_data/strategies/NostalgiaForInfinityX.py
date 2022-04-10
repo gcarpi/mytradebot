@@ -151,7 +151,7 @@ class NostalgiaForInfinityX(IStrategy):
     has_downtime_protection = False
 
     # Do you want to use the hold feature? (with hold-trades.json)
-    holdSupportEnabled = True
+    holdSupportEnabled = False
 
     # Coin Metrics
     coin_metrics = {}

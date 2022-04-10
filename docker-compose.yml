@@ -134,6 +134,15 @@ services:
       --strategy NASOS
     networks:
       - app-network
+  
+  exchange-proxy:
+    image: mikekonan/exchange-proxy:latest-arm64
+    restart: unless-stopped
+    container_name: exchange-proxy
+    command: -verbose 1
+    networks:
+      - app-network
+
 
 networks:
   app-network:
