@@ -62,7 +62,6 @@ sell_params = {
     "pHSL": -0.15,
 }
 
-
 class NASOS(IStrategy):
     INTERFACE_VERSION = 2
 
@@ -417,7 +416,6 @@ class NASOS(IStrategy):
             ),
             ['buy', 'buy_tag']] = (1, 'ewo2')
 
-
         dataframe.loc[
             (
                     (dataframe['rsi_fast'] < 35) &
@@ -428,20 +426,6 @@ class NASOS(IStrategy):
                             dataframe[f'ma_sell_{self.base_nb_candles_sell.value}'] * self.high_offset.value))
             ),
             ['buy', 'buy_tag']] = (1, 'ewolow')
-
-        # This produces around 0.85% - 1.0% profitable trades but long durations so decided against it.
-        # dataframe.loc[
-        #     (
-        #         (
-        #             (
-        #                 (dataframe['macd_norm'] < -0.9) &
-        #                 (dataframe['linangle_17'] > 0.5)
-        #             )
-        #         ) &
-        #         (dataframe['rsi_36'] < 0.55) &
-        #         (dataframe['uptrend'] < 1)
-        #     ),
-        #     ['buy', 'buy_tag']] = (1, 'MacD')
 
         if dont_buy_conditions:
             for condition in dont_buy_conditions:
@@ -470,47 +454,47 @@ class NASOS(IStrategy):
             ['buy', 'buy_tag']] = (1, 'clucHA')
 
         # This does not fit well the protections for EWO buys.
-        dataframe.loc[
-            (
-                (
-                    ((dataframe['close'] < dataframe['zema_offset_buy']) & (dataframe['pm'] <= dataframe['pmax_thresh'])) |
-                    ((dataframe['close'] < dataframe['zema_offset_buy2']) & (dataframe['pm'] > dataframe['pmax_thresh']))
-                ) &
-                (dataframe['volume'] > 0) &
-                (dataframe['long_term_price_warning'] < 1) &
-                (dataframe['trendline'] > 0.996) &
-                (dataframe['btc_rsi'] > 0.49) &
-                (dataframe['close'] < dataframe['Smooth_HA_L']) &
-                (dataframe['close'] < (dataframe['ema_sell'] * self.high_offset_sell_ema.value)) &
-                (dataframe['close'].rolling(288).max() >= (dataframe['close'] * 1.10 )) &
-                (dataframe['Smooth_HA_O'].shift(1) < dataframe['Smooth_HA_H'].shift(1)) &
-                (dataframe['rsi_fast'] < 35) &
-                (dataframe['rsi_84'] < 60) &
-                (dataframe['rsi_112'] < 60) &
-                (
-                    (
-                        (dataframe['close'] < dataframe['ema_offset_buy']) &
-                        (dataframe['pm'] <= dataframe['pmax_thresh']) &
-                        (
-                            (dataframe['EWO'] < -19.632) |
-                            (
-                                (dataframe['EWO'] > 2.615) & (dataframe['rsi'] < 60)
-                            )
-                        )
-                    ) |
-                    (
-                        (dataframe['close'] < dataframe['ema_offset_buy2']) &
-                        (dataframe['pm'] > dataframe['pmax_thresh']) &
-                        (
-                            (dataframe['EWO'] < -19.955) |
-                            (
-                                (dataframe['EWO'] > 2.188) & (dataframe['rsi'] < 45)
-                            )
-                        )
-                    )
-                )
-            ),
-            ['buy', 'buy_tag']] = (1, 'zema')
+        # dataframe.loc[
+        #     (
+        #         (
+        #             ((dataframe['close'] < dataframe['zema_offset_buy']) & (dataframe['pm'] <= dataframe['pmax_thresh'])) |
+        #             ((dataframe['close'] < dataframe['zema_offset_buy2']) & (dataframe['pm'] > dataframe['pmax_thresh']))
+        #         ) &
+        #         (dataframe['volume'] > 0) &
+        #         (dataframe['long_term_price_warning'] < 1) &
+        #         (dataframe['trendline'] > 0.996) &
+        #         (dataframe['btc_rsi'] > 0.49) &
+        #         (dataframe['close'] < dataframe['Smooth_HA_L']) &
+        #         (dataframe['close'] < (dataframe['ema_sell'] * self.high_offset_sell_ema.value)) &
+        #         (dataframe['close'].rolling(288).max() >= (dataframe['close'] * 1.10 )) &
+        #         (dataframe['Smooth_HA_O'].shift(1) < dataframe['Smooth_HA_H'].shift(1)) &
+        #         (dataframe['rsi_fast'] < 35) &
+        #         (dataframe['rsi_84'] < 60) &
+        #         (dataframe['rsi_112'] < 60) &
+        #         (
+        #             (
+        #                 (dataframe['close'] < dataframe['ema_offset_buy']) &
+        #                 (dataframe['pm'] <= dataframe['pmax_thresh']) &
+        #                 (
+        #                     (dataframe['EWO'] < -19.632) |
+        #                     (
+        #                         (dataframe['EWO'] > 2.615) & (dataframe['rsi'] < 60)
+        #                     )
+        #                 )
+        #             ) |
+        #             (
+        #                 (dataframe['close'] < dataframe['ema_offset_buy2']) &
+        #                 (dataframe['pm'] > dataframe['pmax_thresh']) &
+        #                 (
+        #                     (dataframe['EWO'] < -19.955) |
+        #                     (
+        #                         (dataframe['EWO'] > 2.188) & (dataframe['rsi'] < 45)
+        #                     )
+        #                 )
+        #             )
+        #         )
+        #     ),
+        #     ['buy', 'buy_tag']] = (1, 'zema')
 
         return dataframe
 
